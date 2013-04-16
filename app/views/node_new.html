@@ -1,0 +1,108 @@
+$def with()
+$var page_title : 创建话题
+$var only_back : True
+$var jsfiles: /static/public/js/node.js
+<style>
+#creatNewNode{display: none;}
+</style>
+<div class="node_page creat_new_node">
+    <h1>创建一个新话题</h1>
+    <div class="note_tip_wrap">
+        <p class="tc note_tip">话题是多个片段的集合，可以在话题中发表和主题相应的文章、图片等。
+            <a href="javascript:void(0)" class="close_note_tip" title="关闭">
+                <i class="icon-remove-sign icon-remove-sign icon-white"></i>
+                <span>关闭</span>
+            </a>
+        </p>
+    </div>
+    <section class="node_page_content">
+        <div class="node_header node_header_edit">
+            <form id="node_header_edit_form" class="form-horizontal" autocomplete="off">
+                <div class="control-group">
+                    <div class="node_bg_wrap">
+                        <!-- <div>上传一张可以代表此话题的图片</div> -->
+                        <a data-toggle="tooltip" title="上传一张可以代表此话题的图片" class="node_bg" href="javascript:void(0)" onclick="getElementById('upload_file_hide').click()"><i></i></a>
+                        <input type="file" name="uploadImg" id="upload_file_hide" />
+                        <input type="hidden" id="node_Img" name="node_Img" />
+                        <a title="删除" id="delNodeBg" href="javascript:void(0)"><i class="icon-remove icon-white"></i></a>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <input type="text" id="node_Name" class="input-xxlarge" name="node_Name" datatype="node_Name" placeholder="话题名称 不超过20字 必填" errormsg="啊哈？超过20字了？" nullmsg="必填" />
+                    <span class="Validform_checktip"></span>
+                </div>
+                <div class="control-group">
+                    <textarea rows="3" id="node_Desc" name="node_Desc" datatype="node_Desc" class="input-xxlarge" placeholder="请简单描述这个话题 不超过120字 选填" errormsg="哎呀，超过120字了？" ignore="ignore"></textarea>
+                    <span class="Validform_checktip"></span>
+                </div>
+$# note:暂时全部开放
+$#                <div class="control-group">
+
+$#                    <label id="nodeOpenLabel" class="checkbox">
+$#                        <input id="node_Open" name="node_Open" type="checkbox" checked="checked" /> 开放话题，别人便可以在这个话题下发表内容
+$#                    </label>
+$#                </div>
+                <div class="form-control">
+                    <button type="submit" id="node_new_save_btn" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+<script>
+jQuery.cookie = function(name, value, options) {
+    if (typeof value != 'undefined') {
+        options = options || {};
+        if (value === null) {
+            value = '';
+            options = jQuery.extend({}, options);
+            options.expires = -1;
+        }
+        var expires = '';
+        if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) {
+            var date;
+            if (typeof options.expires == 'number') {
+                date = new Date();
+                date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000));//day * 24hour  60min  60sc  1000haomiao
+            } else {
+                date = options.expires;
+            }
+            expires = '; expires=' + date.toUTCString();
+        }
+        var path = options.path ? '; path=' + (options.path) : '';
+        // var path = '/';
+        var domain = options.domain ? '; domain=' + (options.domain) : '';
+        var secure = options.secure ? '; secure' : '';
+        document.cookie = [name, '=', encodeURIComponent(value), expires, domain, path, secure].join('');
+
+    } else {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+};
+var pa=jQuery.noConflict();
+
+pa(function () {
+    var panda =pa(".note_tip_wrap");
+    panda.find(".close_note_tip").click(function(){
+        panda.slideUp(240);
+        pa.cookie('note_tip_wrap_node','close',{ expires: 7, path: '/'});
+    });
+    var hc = pa.cookie('note_tip_wrap_node');
+    if(hc=="close"){
+        panda.hide()
+    }else{
+        panda.show()
+    }
+});
+</script>

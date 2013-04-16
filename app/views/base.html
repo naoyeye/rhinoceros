@@ -1,0 +1,230 @@
+$def with (content, user, siteName, rights, ntf_list, notification_num, ntf_posts, ntf_users)
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>$content.page_title | $siteName</title>
+<meta name="google-site-verification" content="S2cP-R29SZPJEXO6iTzQG2V_X2bbR7bJcpwNzdwx78s" />
+<!-- <meta property="wb:webmaster" content="e8e3c8c86ff93ae1" /> -->
+<link rel="icon" type="image/png" href="/static/public/img/favicon.png">
+<link rel="stylesheet" type="text/css" href="/static/public/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="/static/public/css/base.css?v=1.2"/>
+$if content.has_key('cssfiles'): 
+    $for f in content.cssfiles.split():
+        <link rel="stylesheet" href="$f" type="text/css" media="screen" charset="utf-8"/>
+<!-- <script src="/static/public/js/jquery.min.1.7.2.js" type="text/javascript"></script> -->
+<!-- <script src="/static/public/js/jquery.1.9.1.min.js" type="text/javascript"></script> -->
+<script src="/static/public/js/jquery-1.9.0.js" type="text/javascript"></script>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script> -->
+
+<script src="/static/public/js/jquery-migrate-1.1.1.js"></script>
+<script src="/static/public/js/bootstrap.min.js"></script>
+
+<!--[if lt IE 9]>
+     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"> </script>
+     <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+ <![endif]-->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37330113-1']);
+  _gaq.push(['_setDomainName', 'biubiubiubiu.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body>
+<div id="wrapper">
+<div id="navbarWrapper">
+    <header class="navbar navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+                $if not content.has_key('only_back'):
+                    <nav>
+                        <ul class="nav">
+                            <li class="dropdown biu_logo"><a class="dropdown-toggle" href="/" title="首页">Biu</a></li>
+                        </ul>
+                    </nav>
+                $else:
+                    <a class="edit_cancel pjax" href="javascript:history.go(-1);" title="取消编辑"><i class="icon-remove icon-white"></i>取消</a>
+                <div class="nav-collapse">
+                    <div class="fix">
+                        <ul class="pull-right nav">
+                        $if not user.is_logged:
+                            <li id="goLoginBtn"><a title="登录" href="/">登录</a></li>
+                        $else:
+                            $if rights > 0:
+                                $# #note:权限判断
+                                <li id="creatNewNode"><a href="/node/new"><i class="icon-plus icon-white"></i><p><span>创建话题<b></b></span></p></a></li>
+                            <li class="avatar20 dropdown">
+                                <a title="$user.nickname" class="avatar_c" href="/member/$user.username">
+                                $if user.avatarPath:
+                                    $if user.via == 0:
+                                        $ src = '/static/upload/image' + user.avatarPath + '_48.jpg'
+                                    $if user.via == 1:
+                                        $ src = user.avatarPath
+                                    <img src="$src" width="30" alt="$user.nickname" />
+                                $else:
+                                    <img src="/static/public/img/userpic.jpg" width="30" alt="$user.nickname" />
+                                </a>
+                                <ul class="dropdown-list">
+                                    <li><a href="/settings">设置</a></li>
+                        $if user.is_logged and rights > 1:
+                                    <!-- <li><a href="/settings">设置</a></li> -->
+                                    <li><a href="/admin">后台</a></li>
+                        $if user.is_logged:
+                                    <li class="last"><a href="/account/logout">退出</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+    <div id="main">
+        $:content
+    </div>
+    <a id="goTop" class="invisible" href="javascript:void(0)" title="返回顶部">回顶部</a>
+    $if user.is_logged:
+        <a id="feedbackBtn" href="javascript:void(0)" title="提交反馈"><i class="icon icon-white icon-envelope"></i><span>Feedback</span></a>
+</div>
+
+<!-- <div class="home-overlay">
+    <div class="home-overlay-close"> x </div>
+    <div id="home_welcome">
+        <h1>哎呀，个人主页还没准备好呢</h1>
+        <p>为了让每个人创建、喜欢的话题和片段集中展示，我们正在设计全新的个人主页模板。</p>
+        <p>在个人主页没上线之前，如果你想知道 <span class="overlay_username"></span> 的更多信息，可以先去 <a href="" id="overlay_douban_link" target="_blank"><span class="overlay_username"></span>的豆瓣主页</a> 看看。</p>
+
+        <p></p>
+        <p class="f14">&mdash; Biu</p>
+
+    </div>
+</div> -->
+$if user.is_logged:
+    <div class="feedback-overlay">
+        <div class="home-overlay-close"> x </div>
+        <div id="base02_wrapper">
+            <header>
+                <div id="avatar"><img src="$user.avatarPath" alt="$user.nickname" /></div>
+            </header>
+            <section id="base02_body">
+                <div class="base02_inner">
+                    <div id="feedback_wrap">
+                        <form id="feedbackForm" class="form-horizontal" method="post" action="/help/feedback">
+                            <fieldset>
+                                <legend>欢迎给Biu提意见和建议</legend>
+                                <p style="margin-bottom:30px;color:#999">发现Bug/错误也可以在这里提交</p>
+
+                                <div class="controls">
+                                    <!-- <label class="span5">内容</label> -->
+                                    <textarea name="content" autocomplete="off" placeholder="请说明一下情况" datatype="feedback_content" class="span5" rows="5"></textarea>
+                                    <span class="Validform_checktip">1-500字</span>
+                                </div>
+                                <div class="controls">
+                                    <input class="btn btn-primary btn-block" type="submit" value="提交">
+                                </div>
+                                <!-- <div id="close_feedback_time">3</div> -->
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+$if notification_num:
+    <div id="notification_wrap">
+        <div id="notification_list">
+            <ul class="user_list">
+            $for i in xrange(len(ntf_list)):
+                <li>
+                    <span class="pull-right">$timestrf(ntf_list[i].creation_ts)</span>
+                    $if ntf_list[i].type == 1:
+                        <i class="icon icon-white icon-comment"></i>
+                    $if ntf_list[i].type == 2:
+                        <i class="icon icon-white icon-heart"></i>
+                    $if ntf_list[i].type == 3:
+                        <i class="icon icon-white icon-asterisk"></i>
+                    $if ntf_list[i].type == 4:
+                        <i class="icon icon-white icon-plus"></i>
+                    <a title="$ntf_users[i].nickname" href="/member/$ntf_users[i].username">
+                        <img src="$ntf_users[i].avatarPath" />
+                    </a>
+                    <a title="$ntf_users[i].nickname" href="/member/$ntf_users[i].username">$ntf_users[i].nickname</a>
+                    $# 判断提醒类型
+                    $if ntf_posts[i].postTitle == '':
+                        $ title = ntf_posts[i].postCaption
+                    $else:
+                        $ title = ntf_posts[i].postTitle
+
+                    $if ntf_list[i].type == 1:
+                        评论了你的片段
+                        <a id="ntf_$ntf_list[i].id" class="ntf_link_to" href="/post/$ntf_posts[i].id?ntf_type=$ntf_list[i].type#postCommentForm" title="$ntf_posts[i].postTitle">$title</a>
+                    $if ntf_list[i].type == 2:
+                        喜欢了你的片段
+                        <a id="ntf_$ntf_list[i].id" class="ntf_link_to" href="/post/$ntf_posts[i].id?ntf_type=$ntf_list[i].type#action_block" title="$ntf_posts[i].postTitle">$title</a>
+                    $if ntf_list[i].type == 3:
+                        在
+                        <a id="ntf_$ntf_list[i].id" class="ntf_link_to" href="/post/$ntf_posts[i].id?ntf_type=$ntf_list[i].type#action_block" title="$ntf_posts[i].postTitle">$title</a> 的 评论中提到了你
+                        
+                    $if ntf_list[i].type == 4:
+                        在你创建的话题中发表了新片段
+                        <a id="ntf_$ntf_list[i].id" class="ntf_link_to" href="/post/$ntf_posts[i].id" title="$ntf_posts[i].postTitle">$title</a>
+                </li>
+            </ul>
+            <div id="close_ntf_block">x</div>
+            <div class="btn btn-primary" id="make_all_read_button">全部标记为已读</div>
+        </div>
+
+        <div id="notification">
+            <a href="javascript:void(0)" id="notification_num" title="$notification_num条未读提醒">
+                <span>$notification_num</span>
+            </a>
+        </div>
+        <div id="arts" class="clearfix">
+            <ul>
+                <li><a href="#"><img src="/static/arts/9.jpg"/></a></li>
+                <li><a href="#"><img src="/static/arts/10.jpg"/></a></li>
+                <li><a href="#"><img src="/static/arts/11.jpg"/></a></li>
+            </ul>
+        </div>
+    </div>
+
+<script src="/static/public/js/Validform_v5.1.js" type="text/javascript"></script>
+$if content.has_key('jsfiles'): 
+    $for f in content.jsfiles.split():
+        <script src="$f" type="text/javascript"></script>
+<script src="/static/public/js/public.js" type="text/javascript"></script> 
+<script src="/static/public/js/jquery.scrollTo.min.js" type="text/javascript"></script>
+<script src="/static/public/js/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script src="/static/public/js/jquery.cookie.js" type="text/javascript"></script>
+<script>
+$if user.is_logged:
+    $if rights > 1:
+        jQuery("#switchAdminBar").click(function(){
+            var t = jQuery(this),
+                c = t.parents('#adminBar').eq(0);
+            if (c.css('left') == '0px'){
+                c.animate({
+                    'left' : -100
+                },200)
+            } else if (c.css('left') == '-100px'){
+                c.animate({
+                    'left' : 0
+                },200)
+            }
+        })
+</script>
+</body>
+</html>
+

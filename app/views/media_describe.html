@@ -1,0 +1,29 @@
+$def with(paths, names)
+$var page_title : 添加图片描述
+<h1>添加图片描述</h1>
+<form id="imageDescribe" action="/media/describe" method="POST" enctype="multipart/form-data">
+$for i in xrange(len(paths)):
+    <div class="row">
+        <div class="span3">
+            <img src="$paths[i]=s160" />
+        </div>
+        <div class="span5">
+            <input type="text" maxlength="128" name="image_title"  value="$names[i]" class="image_title span5" /><br/>
+            <textarea maxlength="128" name="image_describe" class="image_des span5"></textarea><span style="color:#ccc">最多128字</span>
+        </div>
+    </div>
+<div class="form-actions span8">
+    <input type="hidden" id="path" name="path" />
+    <button class="btn-large btn btn-success pull-right" id="saveButton" type="submit">保存</button>
+</div>
+</form>
+<script>
+jQuery(function () {
+    var a = new Array();
+    jQuery(".row .span3 img").each(function(i) {
+        //a[i] = jQuery(this).attr('src').split('/')[5].split('=')[0];
+        a[i] = jQuery(this).attr('src').split('=')[0];
+        jQuery('#path').val(a);
+    })
+})
+</script>

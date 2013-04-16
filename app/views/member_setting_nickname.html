@@ -1,0 +1,23 @@
+$var page_title:设置个人昵称
+
+<h1>设置 - 昵称</h1>
+<br/>
+<br/>
+<ul class="nav nav-tabs">
+    <li><a href="/settings">个人资料</a></li>
+    <li class="active"><a href="/settings/nickname">更改昵称</a></li>
+    <li><a href="/settings/email">更改邮箱</a></li>
+    <li><a href="/settings/password">更改密码</a></li>
+</ul>
+
+<form action="/settings/nickname" class="form-horizontal" method="post">
+    <div class="control-group">
+        <label class="control-label" for="nickname">昵称</label>
+        <div class="controls">
+            <input name="nickname" type="text" id="nickname" />
+        </div>
+    </div>
+    <div class="form-actions">
+        <input type="submit" value="保存" class="btn btn-info"/>
+    </div>
+</form>

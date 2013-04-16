@@ -1,0 +1,104 @@
+$def with()
+$var page_title : 登录
+$#var cssfiles: /static/public/css/landing.css
+
+$var cssfiles: /static/public/css/landing.css /static/public/css/jquery.motionCaptcha.0.2.css
+
+$var jsfiles: /static/public/js/Validform_v5.1.js /static/public/js/landing.js /static/public/js/passwordStrength-min.js /static/public/js/jquery.motionCaptcha.0.2.js
+
+
+<div id="landingWrapper">
+    <div id="l_over"></div>
+    <div id="landingMain" class="span8">
+        <div id="landingLogo">
+            <a href="/"><img src="/static/public/img/logo.png" /><h1>Biu</h1></a>
+            <span id="version">Beta 5.0</span>
+        </div>
+        <div id="landingContent">
+            <!-- <div class="span5"> -->
+            <h2>阅读、观看、思考、交流</h2>
+            <!-- <a href="javascript:void(0)" id="goReg" class="btn btn-large btn-block btn-success">注册</a></div> -->
+            <a class="sns_connect_btn connect_douban_btn" href="/connect/douban"><i></i><span>使用豆瓣登录</span></a>
+
+
+            <div id="formWrap">
+                <form id="landingForm" autocomplete="off" action="" method="post">
+                    <div id="regWrap">
+                        <h4>注册</h4>
+                        
+                        <div class="controls">
+                            <input name="regNickname" type="text" datatype="*1-10" nullmsg="请填写昵称" errormsg="1-10个字符" placeholder="给自己起一个名号" class="span3"/><span class="Validform_checktip">1-10个字符</span>
+                        </div>
+
+                        <div class="controls">
+                            <input id="regUserName" name="regUserName" type="text" placeholder="用户名" ajaxurl="/account/check_username"  class="span3" datatype="regUserName" errormsg="以字母开头的2-16个字母、数字组合" nullmsg="用户名是必须的" /><span class="Validform_checktip"><i class="longTip">以字母开头的2-16个字母、数字组合，同时也会是你主页URL的一部分</i></span>
+                        </div>
+
+                        <div class="controls">
+                            <input name="regEmail" type="text" datatype="e" nullmsg="请填写邮箱" ajaxurl="/account/check_email" errormsg="请检查邮箱格式" placeholder="邮箱" class="span3"/><span class="Validform_checktip"></span>
+                        </div>
+
+                        <div class="controls">
+                            <input type="password" name="regUserPassword" placeholder="密码" datatype="*6-16" errormsg="密码范围在6~16位之间" plugin="passwordStrength" class="span3"/>
+                            <span class="Validform_checktip">6-16个字符</span>
+                            <div class="passwordStrength" style="display:none;"><b>密码强度：</b> <span>弱</span><span>中</span><span class="last">强</span></div>
+                        </div>
+
+                        <div class="controls">
+                            <input type="password" name="regUserPassword2" placeholder="确认密码" datatype="*6-16" class="span3" datatype="*" recheck="regUserPassword" nullmsg="请再输入一次密码！" errormsg="您两次输入的账号密码不一致！" />
+                            <span class="Validform_checktip"></span>
+                        </div>
+
+                        <div class="controls">
+                            <div id="mc">
+                                <canvas id="mc-canvas"></canvas>
+                            </div>
+                            <span class="Validform_checktip">请重新描绘右侧图形，大概意思即可</span>
+                        </div>
+
+                        <div class="form-actions"><input type="submit" id="regButton" class="btn btn-success btn-block btn-large" disabled="disabled" value="注册" /></div>
+
+                    </div>
+                </form>
+
+                <form id="landingForm2" autocomplete="off" action="/account/landing_login" method="post">
+                    <div id="loginWrap">
+                        <div class="input-prepend">
+                            <span class="add-on"><i class="icon-envelope"></i></span>
+                            <input name="loginEmail" type="text" placeholder="邮箱" class="span3"/>
+                            <span class="Validform_checktip"></span>
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on"><i class="icon-lock"></i></span>
+                            <input name="loginPassword" type="password" placeholder="密码" class="span3"/>
+                            <a id="forgotButton" href="javascript:void(0)">忘记密码?</a>
+                        </div>
+
+                        <input type="submit" id="loginButton" class="btn btn-success" value="登录"><span id="msgdemo2"></span>
+                    </div>
+                </form>
+
+                <form id="landingForm3" autocomplete="off" action="/account/landing_forgot" method="post">
+                    <div id="forgotWrap">
+                        <div class="input-prepend help-inline">
+                            <input name="forgotEmail" type="text" placeholder="输入你的注册邮箱" datatype="e" nullmsg="请填写邮箱" errormsg="请检查邮箱格式" class="span3"/>
+                            <span class="Validform_checktip"></span>
+                        </div>
+                        <div class="help-inline" style="vertical-align: top;">
+                            <input type="submit" id="loginButton" class="btn btn-success" value="发送邮件"><span id="msgdemo3"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="buttonGroup">
+                <a id="reg_link" href="javascript:void(0)"><i class="icon_26 icon-reg"></i><span>注册<b></b></span></a>
+                <a id="login_link" href="javascript:void(0)"><i class="icon_26 icon-login"></i><span>登录<b></b></span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="detect">
+    如果想体验最佳浏览效果，请使用 Firefox 或者 Chrome 浏览器。此网站不对IE内核浏览器（包括国产360浏览器、腾讯TT等）和Windows系统做兼容。
+</div>

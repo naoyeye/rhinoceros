@@ -1,0 +1,45 @@
+$def with(results, user_list, pager)
+$var page_title: 用户反馈
+$var cur : feedback
+
+<style>
+.nav-tabs{margin-bottom: 0}
+</style>
+<section class="admin_post_page_content">
+<h2>用户反馈</h2>
+
+<ul class="clearfix">
+$for i in xrange(len(user_list)):
+    <li style="margin:10px 0">
+        $if user_list[i].has_key('username'):
+            <a href="/member/$user_list[i].username"><img src="$user_list[i].avatarPath" alt="$user_list[i].nickname"></a>
+            <a href="/member/$user_list[i].username">$user_list[i].nickname</a> : 
+        $elif user_list[i].has_key('douban_id'):
+            <a href="/member/$user_list[i].douban_id">$user_list[i].douban_id</a> : 
+        $else:
+            <span>NULL</span>
+        <span class="f14">$results[i].content</span>
+        <span class="f12" style="color:#999"> - $timestrf(results[i].creation_ts)</span>
+    </li>
+</ul>
+
+$def show_paging():
+    $if pager.leftmost_a or pager.leftmost_a == 0:
+        <a href="/admin/feedback?start=$pager.leftmost_a">&laquo; 第1页</a>
+    $if pager.left_a or pager.left_a == 0:
+        <a href="/admin/feedback?start=$pager.left_a">&#8249; 上一页</a>
+    第 $(pager.start + 1) —  
+    $if pager.right_a: 
+        $pager.right_a 条
+    $else:
+        $pager.max_results  条
+    共 $pager.max_results 条
+    $if pager.right_a:
+        <a href="/admin/feedback?start=$pager.right_a">下一页 &#8250;</a>
+    $if pager.rightmost_a:
+        <a href="/admin/feedback?start=$pager.rightmost_a">末页 &raquo;</a>
+
+$if pager and pager.max_results:
+    <div class="paging">
+        <span>$:show_paging()</span>
+    </div>

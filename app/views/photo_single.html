@@ -1,0 +1,320 @@
+$def with(img, pager, user_id, user, author, is_favorite, comments, comments_authors_ids)
+$var page_title: $img.imageTitle
+<div class="template-article-and-image">
+    <div class="post-image-wrap">
+        <span style="background:url($img.path=s1600) center center no-repeat;background-size:cover;width:100%;height:100%;display:block;"></span>
+        <span style="display:none;width:100%;height:100%;background:rgba(0,0,0,0.3);position:absolute;left:0;top:0;"></span>
+    </div>
+
+    <div style="margin-top:480px;">
+        $if pager.left:
+            <a href="/photo/$pager.left.id">&#8249; 上一张</a>
+        $(pager.number + 1) of $pager.max_results
+        $if pager.right:
+            <a href="/photo/$pager.right.id">下一张 &#8250;</a>
+        <br>
+
+        <img src="$img.path" alt="$img.imageTitle" style="margin-top:20px;" />
+
+        <div id="imgInfo">
+            <h4 id="imageTitle">$img.imageTitle</h4>
+            $if img.imageDescribe:
+                <p id="imageDesc">$img.imageDescribe</p>
+            $else:
+                $if img.userID == user_id:
+                    <p id="imageDesc" class="cc">点击添加描述</p>
+        </div>
+        <div id="imgOther">
+            <span>上传于 $img.creation_ts</span> | 
+            <span>$img.comm_num评论</span> | 
+            <span>$img.view_num人浏览</span> | 
+            <span>
+                $if img.favo_num != 0:
+                    <a href="/photo/$img.id/fans">
+                        <i id="FN">$img.favo_num</i>人喜欢
+                    </a>
+                $else:
+                    <i id="FN">$img.favo_num</i>人喜欢
+            </span> | 
+            $if img.userID == user_id:
+                <a href="javascript:void(0)" id="del">删除</a>
+            $elif is_favorite:
+                <a href="javascript:void(0)" id="cancel_favorite"><i class="icon-star"></i> 取消喜欢</a>
+            $else:
+                <a href="javascript:void(0)" id="favorite"><i class="icon-star-empty"></i> 喜欢</a>
+        </div>
+        $if comments:    
+            <div id="comment">
+                <ul>
+                $for i in xrange(len(comments)):
+                    <li id="comm_$comments[i].id">
+                        $if comments_authors_ids[i].avatarPath:
+                            $ src = '/static/upload/image' + comments_authors_ids[i].avatarPath + '_48.jpg'
+                            <a target="_blank" title="查看ta的豆瓣页面" href="/member/$comments_authors_ids[i].username"><img src="$src" /></a>
+                        $else:
+                            <img src="/static/public/img/default_48x48.jpg" alt="" />
+                        $comments_authors_ids[i].nickname -   <span>$comments[i].creation_ts</span>
+                        $if comments[i].user_id == user_id:
+                            <a href="javascript:void(0)" class="del_comment">删除</a>
+                            
+                        <p>$:text2html(comments[i].comment)</p>
+                        
+                    </li>
+                </ul>
+            </div>
+
+        <div id="add_comment">
+        <h3>你的评论：</h3>
+        $if user.is_logged:
+            <textarea autocomplete="off" name="comment" class="span5" id="commentContent"></textarea>
+            <div class="form-actions span5">
+                <a href="javascript:void(0)" id="submitComment" class="btn pull-right">添加</a>
+            </div>
+        $else:
+            <p>请 <a href="#">登录</a> 后添加评论</p>
+        </div>
+    </div>
+    <div class="" style="padding-top:40px;">
+        $if not author.avatarPath:
+            <a target="_blank" title="查看ta的豆瓣页面" href="/member/$author.username" class="avatar"><img src="/static/public/img/default_48x48.jpg" /></a>
+        $else:
+            $ src = author.avatarPath + '_48.jpg'
+            <a target="_blank" title="查看ta的豆瓣页面" href="/member/$author.username"><img src="/static/upload/image/$src" /></a>
+        <a target="_blank" title="查看ta的豆瓣页面" href="/member/$author.username">$author.nickname</a>
+
+        <ul>
+            $if pager.left:
+                <li class="pull-left">
+                    <p>上一张</p>
+                    <a href="/photo/$pager.left.id">
+                        <img src="$pager.left.path=s64-c" alt="$pager.left.imageTitle" />
+                    </a>
+                </li>
+            $else:
+                <li class="pull-left">
+                    没有了
+                </li>
+
+            <li class="pull-left">
+                <p>当前</p>
+                <img src="$img.path=s64-c" alt="$img.imageTitle" />
+            </li>
+
+            $if pager.right:
+                <li class="pull-left">
+                    <p>下一张</p>
+                    <a href="/photo/$pager.right.id">
+                        <img src="$pager.right.path=s64-c" alt="$pager.right.imageTitle" />
+                    </a>
+                </li>
+            $else:
+                <li class="pull-right">
+                    没有了
+                </li>
+        </ul>
+    </div>
+</div>
+$if user.is_logged:
+    <script type="text/javascript">
+        jQuery(function () {
+            //添加评论
+            jQuery("#submitComment").click(function(){
+                var img_id = $img.id,
+                    u_id = $user_id,
+                    comment = jQuery("#commentContent").val();
+                // alert(comment);
+                // return false;
+                jQuery.ajax({
+                    type: "POST",
+                    url : '/photo/'+ img_id + '/comment',
+                    data: {img_id : img_id , u_id: u_id, comment : comment},
+                    success: function(data) {
+                        //alert(data)
+                        location.reload();
+                         //window.location.href = "/test";
+                    },
+                });
+            })
+            //删除评论
+            jQuery(".del_comment").click(function(){
+                var comm_id = jQuery(this).parents('li').eq(0).attr('id').split('_')[1],
+                    user_id = $user_id,
+                    img_id = $img.id,
+                    msg = "真的要删除吗？";
+
+                if (confirm(msg)==true){
+                    jQuery.ajax({
+                        type: "POST",
+                        url : '/photo/delete_comment',
+                        data: {id:comm_id, user_id:user_id, img_id:img_id},
+                        success: function(data) {
+                            jQuery("#comm_" + comm_id ).fadeOut()
+                        },
+                    });
+                }else{
+                    return false;
+                }
+            })
+        })
+    </script>
+
+$if user.is_logged and img.userID == user_id:
+    <script type="text/javascript">
+
+    jQuery(function () {
+        var org_i = "$img.imageTitle",
+            $if img.imageDescribe:
+                org_t = "$img.imageDescribe"
+            $else:
+                org_t = '点击添加描述';
+        //变色
+        jQuery("#imgInfo").hover(
+            function(){
+                if(jQuery(this).find("#imageTitleInput").size() == 0){
+                    jQuery("#imageTitle, #imageDesc").addClass('light-yellow')
+                }
+            },
+            function(){
+                jQuery("#imageTitle, #imageDesc").removeClass('light-yellow')
+            }       
+            
+        )
+        //修改标题
+        jQuery("#imageTitle").click(function(){
+            jQuery("#imageTitle, #imageDesc").removeClass('light-yellow')
+            if ( jQuery(this).find("#imageTitleInput").size() == 0 ){
+                var i = jQuery("#imageTitle").text(),
+                    t = jQuery("#imageDesc").text(),
+                    input = '<input type="text" name="imageTitle" id="imageTitleInput" maxlength="128" class="span7" value="'+ i +'" />',
+                    textarea = '<textarea maxlength="128" name="imageDescribe" id="imageDescribeTextarea" class="span7">'+ t +'</textarea><div class="form-actions"><button class="btn btn-success pull-right" id="saveButton" type="submit">保存</button><button class="btn pull-right" id="cancelButton" type="submit">取消</button></div>';
+                jQuery("#imgOther, #privacy").hide();
+                jQuery(this).html('').append(input);
+                jQuery("#imageDesc").html('').append(textarea)
+                jQuery("#imageTitleInput").select();
+
+            }
+        })
+        //修改描述
+        jQuery("#imageDesc").click(function(){
+            jQuery("#imageTitle, #imageDesc").removeClass('light-yellow')
+            if ( jQuery(this).find("#imageDescribeTextarea").size() == 0 ){
+                var i = jQuery("#imageTitle").text(),
+                    t = jQuery("#imageDesc").text(),
+                    input = '<input type="text" name="imageTitle" id="imageTitleInput" maxlength="128" class="span7" value="'+ i +'" />',
+                    textarea = '<textarea maxlength="128" name="imageDescribe" id="imageDescribeTextarea" class="span7">'+ t +'</textarea><div class="form-actions"><button class="btn btn-success pull-right" id="saveButton" type="submit">保存</button><button class="btn pull-right" id="cancelButton" type="submit">取消</button></div>';
+                jQuery("#imgOther, #privacy").hide();
+                jQuery(this).html('').append(textarea);
+                jQuery("#imageTitle").html('').append(input);
+                jQuery("#imageDescribeTextarea").select();
+            }
+        })
+        //取消修改
+        jQuery("#cancelButton").live('click', function(){
+            jQuery("#imageTitleInput,#imageDescribeTextarea").remove();
+            jQuery("#imageDesc").html(org_t);
+            jQuery("#imageTitle").html(org_i);
+            jQuery("#imgOther, #privacy").show();
+        })
+        //保存修改
+        jQuery("#saveButton").live('click', function(){
+            var img_id = $img.id,
+                input_str = jQuery("#imageTitleInput").val(),
+                textarea_str = jQuery("#imageDescribeTextarea").val();
+                if (textarea_str == "点击添加描述"){
+                    textarea_str = '';
+                }
+            jQuery.ajax({
+                type: "POST",
+                url : '/photo/edit/'+ img_id,
+                data: {id : img_id ,inputfield : input_str, textfield : textarea_str},
+                success: function(data) {
+                    jQuery("#imageTitleInput,#imageDescribeTextarea").remove();
+                    if (textarea_str == ''){
+                        jQuery("#imageDesc").html('点击添加描述');
+                    } else {
+                        jQuery("#imageDesc").html(textarea_str);
+                    }
+                    
+                    jQuery("#imageTitle").html(input_str);
+                    jQuery("#imgOther, #privacy").show();
+                },
+            });
+            return false;
+        })
+        
+        //删除图片
+        jQuery("#del").click(function(){
+            var img_id = $img.id,
+                user_id = $user_id,
+                msg = "真的确定要删除吗？";
+            if (confirm(msg)==true){
+                jQuery.ajax({
+                    type: "POST",
+                    url : '/photo/delete/'+ img_id,
+                    data: {id : img_id, userID : user_id},
+                    success: function(data) {
+                        window.location.href = "/member/$user.username";
+                    },
+                });
+            }else{
+                return false;
+            }
+        })
+    })
+    </script>
+$else:
+    <script type="text/javascript">
+    jQuery(function () {
+
+        //喜欢
+        jQuery("#favorite").live('click', function(){
+            $if user_id:
+                var user_id = $user_id,
+            $else:
+                var user_id = null,
+            img_id = $img.id;
+
+            if(user_id != null){
+                jQuery.ajax({
+                    type: "POST",
+                    url : '/photo/favorite/'+ img_id,
+                    data: {user_id : user_id, img_id: img_id},
+                    success: function(data) {
+                        jQuery("#favorite").html('<i class="icon-star"></i> 取消喜欢').attr('id','cancel_favorite');
+                        var n = jQuery("#FN").text();
+                        jQuery("#FN").html(parseInt(n)+1);
+                    },
+                }); 
+            } else {
+                alert("还未登录")
+            }            
+            
+        })
+
+        //取消喜欢
+        jQuery("#cancel_favorite").live('click', function(){
+            $if user_id:
+                var user_id = $user_id,
+            $else:
+                var user_id = null,
+            img_id = $img.id;
+
+            if(user_id != null){
+                jQuery.ajax({
+                    type: "POST",
+                    url : '/photo/cancel_fav/'+ img_id,
+                    data: {user_id : user_id, img_id: img_id},
+                    success: function(data) {
+                        jQuery("#cancel_favorite").html('<i class="icon-star-empty"></i> 喜欢').attr('id','favorite')
+                        var n = jQuery("#FN").text();
+                        jQuery("#FN").html(parseInt(n)-1);
+                    },
+                }); 
+            } else {
+                alert("还未登录")
+            }  
+            
+        })
+
+    })
+    </script>

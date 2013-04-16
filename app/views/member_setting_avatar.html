@@ -1,0 +1,116 @@
+$def with (user, mid_src, message='')
+$var page_title: 上传头像
+$var cssfiles: /static/public/css/jquery.Jcrop.min.css
+$var jsfiles: /static/public/js/jquery.Jcrop.min.js
+
+<div class="container" style="padding-top:50px;">
+    <a href="/settings">&lt; 取消</a>
+    <br/>
+    <h1>设置 - 上传头像</h1>
+    <br/>
+    <br/>
+    <form method="POST" action="" enctype="multipart/form-data">
+        <fieldset>
+            <span class="alert-error">$message</span><br/>
+            <input type="file" name="uploadImg" id="uploadImg" /><br/><br/>
+            <input type="submit" class="btn btn-info" value="上传" id="submitButton"/>
+        </fieldset>
+    </form>
+    <script>
+         jQuery("#submitButton").click(function(){
+            var v = jQuery("#uploadImg").val();
+            if (v == '') {
+                jQuery("#submitButton").after('<span class="alert alert-error">请选择要上传的文件')
+                return false;
+            }                    
+        })
+    </script>
+    $if mid_src:
+        <img src="$mid_src" id="cropbox" />
+        <div style="width:48px;height:48px;overflow:hidden;border:1px solid #eee;display:inline-block;float:left;">
+            <img src="$mid_src" id="preview" alt="Preview" class="jcrop-preview" style="margin:0;" />
+        </div>
+        
+        <form method="POST" action="/settings/avatar_crop" enctype="multipart/form-data" style="clear:both">
+            <input type="hidden" id="path" name="path" />
+            <input type="hidden" id="x" name="x" />
+            <input type="hidden" id="y" name="y" />
+            <input type="hidden" id="w" name="w" />
+            <input type="hidden" id="h" name="h" />
+            <input type="submit" class="btn btn-info" value="保存头像设置" id="save" />
+        </form>
+
+        <script>
+        jQuery(function(jQuery){
+
+            // Create variables (in this scope) to hold the API and image size
+            var jcrop_api, boundx, boundy;
+            
+            jQuery('#cropbox').Jcrop({
+                //bgFade:     true,
+                bgOpacity: 0.7,
+                setSelect: [ 0, 0, 0, 0 ], //初始尺寸
+                onChange: updatePreview,
+                onSelect: updatePreview,
+                onSelect: updateCoords, 
+                aspectRatio: 1, //高宽比
+                minSize: [ 48, 48 ]
+                //maxSize: [ 128, 128 ]
+            },function(){
+                
+                // Use the API to get the real image size
+                var bounds = this.getBounds();
+                boundx = bounds[0]; // 图片宽度
+                boundy = bounds[1]; // 图片高度
+                // Store the API in the jcrop_api variable
+                jcrop_api = this;
+
+                if(boundx == boundy){
+                    jcrop_api.setSelect([0,160,160,0]);
+                }
+                else if(boundx > boundy){
+                    var delta = (boundx - boundy)/2;
+                    lt = delta;
+                    lr = 0;
+                    lb = 160;
+                    rb = delta + 160;
+                    jcrop_api.setSelect([lt,lr,lb,rb]);
+                }
+                else if(boundx < boundy){
+                    var delta = (boundy - boundx)/2;
+                    lt = 0;
+                    lr = delta;
+                    lb = delta + 160;
+                    rb = 160;
+                    jcrop_api.setSelect([lt,lr,lb,rb]);
+                }
+
+              });
+
+            function updateCoords(c){
+                jQuery('#x').val(c.x);
+                jQuery('#y').val(c.y);
+                jQuery('#w').val(c.w);
+                jQuery('#h').val(c.h);
+            };
+
+            function updatePreview(c){
+                if (parseInt(c.w) > 0){
+                    var rx = 48 / c.w;
+                    var ry = 48 / c.h;
+
+                    jQuery('#preview').css({
+                        width: Math.round(rx * boundx) + 'px',
+                        height: Math.round(ry * boundy) + 'px',
+                        marginLeft: '-' + Math.round(rx * c.x) + 'px',
+                        marginTop: '-' + Math.round(ry * c.y) + 'px'
+                    });
+                }
+            };
+
+            var str = '$mid_src';
+            str2 = str.substr(1)
+            jQuery('#path').val(str2)
+        });
+        </script>
+</div>

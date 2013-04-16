@@ -1,0 +1,22 @@
+$def with(user)
+$var page_title :完善个人资料
+
+$var jsfiles: /static/public/js/Validform_v5.1.js /static/public/js/passwordStrength-min.js /static/public/js/welcome.js
+
+<div id="landingForm_wrapper">
+    <form id="landingForm" class="form-horizontal" method="post" action="/welcome/$user.username">
+        <fieldset>
+            <legend>欢迎$user.nickname，请填写邮箱来创建帐号。</legend>
+            <div class="input-prepend input-append">
+                <span class="add-on"><i class="icon-envelope"></i></span>
+                <input name="regEmail" type="email" datatype="e" nullmsg="请填写邮箱" ajaxurl="/account/check_email" errormsg="请检查邮箱格式" placeholder="邮箱地址" class="span3"/>
+                <button class="btn" type="submit" id="regButton">提交</button>
+                <span class="Validform_checktip"></span>
+            </div>
+            <p class="why">如果有新的提醒，也可以收到邮件通知。（可以在个人设置中取消）</p>
+            <p class="why">新浪/网易/QQ邮箱可能会收不到验证邮件</p>
+        </fieldset>
+    </form>
+</div>
+
+<!-- <div id="promise">既然都谨慎的开始查看源代码了。那就详细说明一下：Biu 的服务器和域名都在美国，对您的个人信息绝对保密，绝对不会向任何第三方透露 — Even the fxxking CN government</div> -->

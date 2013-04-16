@@ -1,0 +1,34 @@
+$def with (user_info, nickname_form, email_form, password_form, on_success_message='', u='')
+$var page_title: 设置
+
+$if u.avatarPath:
+    $ src = '/static/upload/image' + u.avatarPath + '_48.jpg'
+    <img src="$src" alt="" />
+$else:
+    <img src="/static/public/img/default_48x48.jpg" alt="" />
+    
+<a href="/settings/avatar">更改头像</a>
+
+<form method="post" class="default_form" action="/settings/change_nickname">
+    <fieldset>
+    <legend>更改昵称:</legend>
+    现在的昵称是 <strong>$user_info.nickname</strong>
+    $:nickname_form.render_css()
+    </fieldset>
+</form>
+
+<form method="post" class="default_form" action="/settings/change_email">
+    <fieldset>
+    <legend>更改邮箱:</legend>
+    现在的邮箱是 <strong>$user_info.email</strong>
+    $:email_form.render_css()
+    </fieldset>
+</form>
+
+<form method="post" class="default_form" action="/settings/change_password">
+    <fieldset>
+    <legend>更改密码:</legend>
+    <span class="on_success_message">$on_success_message</span>
+    $:password_form.render_css()
+    </fieldset>
+</form>

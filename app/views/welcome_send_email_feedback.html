@@ -1,0 +1,43 @@
+$def with(user, status, email)
+
+<div id="send_email_feedback_wrap">
+    <div id="send_email_feedback">
+    $if status == 'succesful':
+        $var page_title : 激活邮件发送成功
+        <h2>激活邮件发送成功</h2>
+        <p class="check">请去你的邮箱 <strong>$email</strong> 收取激活邮件。</p>
+        <div class="t-l w500">
+            <p>没收到邮件？</p>
+            <ol>
+                <li>检查是不是在“垃圾箱”中。</li>
+                <li>邮箱填错了，<a href="/welcome/$user.username?action=e">重新填写</a>。</li>
+                <li>搞不定？<a href="/help/feedback">给管理员捎个话</a>。</li>
+            </ol>
+        </div>
+    $elif status == 'failed':
+        $var page_title : 激活邮件发送失败
+        <h2>激活邮件发送失败</h2>
+        <p class="check">请尝试重新填写邮件地址</p>
+        <div class="t-l w500">
+            <p>没收到邮件？</p>
+            <ol>
+                <li>邮箱填错了，<a href="/welcome/$user.username?action=e">重新填写</a>。</li>
+                <li>搞不定？<a href="/help/feedback">给管理员捎个话</a>。</li>
+            </ol>
+        </div>
+
+    $elif status == 'duplicate':
+        $var page_title : 请勿重复提交
+        <h2>你已经提交过一次了</h2>
+        <p>请去你的邮箱 <strong>$email</strong> 收取激活邮件。</p>
+        <div class="t-l w500">
+            <p>没收到邮件？</p>
+            <ol>
+                <li>检查是不是在“垃圾箱”中。</li>
+                <li>新浪邮箱可能会收不到验证邮件，请换用其他邮箱。<a href="/welcome/$user.username?action=e">重新填写</a></li>
+                <li>邮箱填错了，<a href="/welcome/$user.username?action=e">重新填写</a>。</li>
+                <li>搞不定？<a href="/help/feedback">给管理员捎个话</a>。</li>
+            </ol>
+        </div>
+    </div>
+</div>

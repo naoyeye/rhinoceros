@@ -1,0 +1,61 @@
+$def with(postList)
+$var page_title : 最新的20个片段
+
+<div class="node_page" style="height:auto;overflow:visible">
+    <div id="rec_nav">
+        <div class="navbar navbar-inverse">
+            <div class="navbar-inner">
+                <ul class="nav">
+                    <li><a href="/">推荐片段</a></li>
+                    <li><a href="/node">推荐话题</a></li>
+                    <li><a href="/node/all">最新话题 - 仅管理员</a></li>
+                    <li class="active"><a href="/post/latest">最新片段 - 仅管理员</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <section class="node_page_content">
+        <h1 style="text-align:center">最新的20个片段</h1>
+    $if postList:
+        <div class="post_list_wrap clearfix">
+            <ul>
+            $for post in postList:
+                <li class="post_list item_temp_$post.postTemp
+                $if not post.postImage : 
+                    item_no_img
+                ">
+                    <div class="post_link_wrap">
+                        <a href="/post/$post.id">
+                            $if post.postImage:
+                                <span class="item_image_wrap">
+                                    $if post.postTemp == 1 or post.postTemp == 2:
+                                        $ img = post.postImage + "_365.jpg"
+                                    $elif post.postTemp == 3 or post.postTemp == 4 or post.postTemp == 5:
+                                        $ img = post.postImage + "_366.jpg"
+                                    <span class="item_image" style="background-image:url($img)"></span>
+                                </span>
+                            <div class="post_cont">
+                                $if post.postTemp == 4:
+                                    <div class="vertical-align"><h1>$post.postCaption</h1></div>
+                                $else:
+                                    <h1>$post.postTitle</h1>
+                                $if post.postTemp != 3 and post.postTemp != 4 and post.postTemp != 5:
+                                    <p class="snippet">
+                                    $filter_tags(post.postArticle[0:850])
+                                    </p>
+                                <div class="gradient"></div>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    $else:
+        <div class="node_empty_border">
+            <div class="node_empty">
+                <h1>这个话题还是空的</h1>
+                <p>开通权限后，你可以点击左上角的“添加片段”在这个话题下添加相应的内容.</p>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,46 @@
+$def with (last_users, last_image, authors)
+$var page_title: 浏览
+$var cssfiles: /static/public/css/player.zen.css
+$var jsfiles: /static/public/js/player.jquery.rotate.js /static/public/js/player.jquery.grab.js /static/public/js/player.jquery.jplayer.min.js /static/public/js/player.zen.js
+
+<div style="padding:50px">
+    <div id="zen">
+        <span class="player"></span>
+        <span class="circle"></span>
+        <span class="progress"></span>
+        <span class="buffer"></span>
+        <span class="drag"></span>
+        <div class="button">
+            <span class="icon play"></span>
+            <span class="icon pause"></span>
+        </div>
+    </div>
+</div>
+<h2>最新上传</h2>
+<ul class="thumbnails">
+    $for i in xrange(len(last_image)):
+        <li>
+            <a href="/photo/$last_image[i].id"><img src='$last_image[i].path=s160-c' /></a>
+            <p class="thumbnails_info">
+                <a target="_blank" title="查看ta的豆瓣页面" href="/member/$authors[i].username">$authors[i].nickname</a> 上传 
+                <span style="color:#999">$last_image[i].favo_num人喜欢</span>
+                <span style="color:#999">$last_image[i].comm_num评论</span>
+            </p>
+        </li>
+
+</ul>
+<h2>最新注册</h2>
+<ul id="user_list">
+    $for user in last_users:
+    <li>
+        $if not user.avatarPath:
+            <a target="_blank" title="查看ta的豆瓣页面" href="/member/$user.username" class="avatar"><img src="/static/public/img/default_48x48.jpg" /></a>
+        $else:
+            $ src = user.avatarPath + '_48.jpg'
+            <a target="_blank" title="查看ta的豆瓣页面" href="/member/$user.username" class="avatar"><img src="/static/upload/image$src" /></a>
+        <p><a target="_blank" title="查看ta的豆瓣页面" href="/member/$user.username"> $user.nickname</a></p>
+    </li>
+</ul>
+
+
+

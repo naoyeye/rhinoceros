@@ -1,0 +1,46 @@
+$def with(user)
+$var page_title : 问题/意见反馈
+<script src="/static/public/js/Validform_v5.1.js"></script>
+
+<div id="feedback_wrap">
+    <form id="feedbackForm" class="form-horizontal" method="post" action="">
+        <fieldset>
+            <legend>有啥问题尽管提</legend>
+            <div class="controls">
+                <label>标题（选填）</label>
+                <input type="text" name="title" placeholder="标题" class="span4" />
+            </div>
+            <div class="controls">
+                <label>内容（1-500字）</label>
+                <textarea name="content" datatype="s1-500" placeholder="请说明一下情况" class="span4"></textarea>
+            </div>
+            <div class="controls">
+                <button class="btn" type="submit">提交</button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<script>
+jQuery(function(){
+//feedback 表单验证
+    jQuery('#feedbackForm').Validform({
+        tipSweep : true,
+        ajaxPost:true,
+        // datatype : {
+        //     "feedback_content": /^[\w\W]{1,500}$$/
+        // },
+        tiptype:function(msg,o,cssctl){
+            var objtip=o.obj.siblings(".Validform_checktip");
+            cssctl(objtip,o.type);
+            objtip.text(msg);
+        },
+        callback:function(data){
+            if(data.status=="y"){
+                jQuery('#feedbackForm').hide().after('<h3>提交成功，感谢你的反馈 :) </h3>');
+            }
+        }
+    })
+})
+
+</script>

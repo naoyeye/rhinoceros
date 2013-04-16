@@ -1,0 +1,838 @@
+$def with(rights, node, post, post_author_info, user, timestrf, likers_list, comments, commenters, ntf_type, is_voted, misc)
+
+$if post.postTitle == '':
+    $var page_title : $:post.postCaption  | $:node.nodeName
+$else:
+    $var page_title : $:post.postTitle | $:node.nodeName
+
+$var jsfiles: /static/public/js/jquery.filedrop.js /static/public/js/post.js /static/public/js/fancybox/jquery.mousewheel-3.0.6.pack.js /static/public/js/fancybox/jquery.fancybox.pack.js?v=2.1.3 /static/public/js/jquery.NobleCount.js /static/public/redactor/zh_cn.js /static/public/redactor/redactor.min.js
+
+$var cssfiles: /static/public/css/post_image_upload.css /static/public/js/fancybox/jquery.fancybox.css?v=2.1.3 /static/public/redactor/redactor.css
+
+<div id="test_log"></div>
+$if user.is_logged:
+    $if rights > 1:
+        <div id="adminBar">
+            <a id="switchAdminBar" href="javascript:void(0)"><i class="icon icon-user icon-white"></i></a>
+            <a class="admin_btn admin_rec_post" href="javascript:void(0)">放到首页</a>
+            <a class="admin_btn admin_del_post" href="javascript:void(0)">删除话题</a>
+        </div>
+
+<div class="post_page_content_wrap">
+    <div class="post_node_link menu_box active">
+        <a class="node_link" title="返回话题 - $node.nodeName" href="/node/$node.id">
+
+            $if node.nodeImg:
+                <img class="post_node_link_img" src="/static/upload/node_img$node.nodeImg" width="40" height="40" />
+            $else:
+                <img class="post_node_link_img" src="/static/public/img/node_cover.png" width="40" height="40" />
+
+            <span class="post_node_link_arrow">&lt;</span>
+            <h3 class="post_node_link_name">$node.nodeName</h3>
+        </a>
+    </div>
+
+<div class="post_temp_$post.postTemp">
+
+    $if post.postImage:
+        <!-- 图片cover s -->
+        <div class="post_image_wrap">
+        $if post.postTemp == 1:
+            $ img = post.postImage + "_1200.jpg"
+            <span class="post_image" style="background-image:url($img)">
+                <img src="$img" alt="" style="display:none"/>
+
+        $elif post.postTemp == 2:
+            $ img = post.postImage + "_450-max.jpg"
+            <span class="post_image" style="background-image:url($img)">
+                <img src="$img" alt="" style="display:none"/>
+
+        $elif post.postTemp == 3 or post.postTemp == 4:
+            $ img = post.postImage + "_1201-max.jpg"
+            <span class="post_image" style="background-image:url($img)">
+                $if post.postTemp == 3:
+                    $post.postTitle
+                $if post.postTemp == 4:
+                    $post.postCaption
+                <img src="$img" alt="
+                $if post.postTitle == '':
+                    $post.postCaption
+                $elif post.postCaption == '' :
+                    $post.postTitle
+                " />
+                $if post.comment_num == 0:
+                    <div id="switch_comment" class="btn btn-info" title="$post.comment_num 评论">评论</div>
+                $else:
+                    <div id="switch_comment" class="btn btn-info fix_line" title="$post.comment_num 评论">评论<span class="comment_count">$post.comment_num</span></div>
+
+        $elif post.postTemp == 5:
+            $ img = post.postImage + "_450-max.jpg"
+            <span class="post_image" style="background-image:url($img)">
+                <img src="$img" alt="" style="display:none"/>
+
+        $if user.is_logged:
+            $if user.id == post.postAuthor:
+                <a href="javascript:void(0)" class="change_post_image_btn btn btn-info"><i class="icon-pencil icon-white"></i> 更换图片</a>
+                <div class="post_image_upload_wrap node_empty_border" style="display:none">
+                    <div class="post_image_upload node_empty">
+                        <a href="javascript:void(0)" class="upload_btn btn btn-info" onclick="getElementById('upload_file_hide').click()">上传图片 或 拖拽图片到这里</a>
+                        <span class="message">拖拽图片到这里就会自动上传，请保证你上传图片的质量。支持jpg/png/bmp/gif格式，最大2M。</span>
+                        <span class="dragOverTip"></span>
+                        <input type="file" name="uploadImg" id="upload_file_hide" />
+                        <input type="hidden" datatype="*" id="post_Img" name="post_Img" errormsg="啊哈？出错了" nullmsg="你还没有上传图片。" />
+                        <span class="Validform_checktip postImgValidformChecktip"></span>
+                        <div class="image_control_bar">
+                            <a class="del_post_img btn" href="javascript:void(0)"><i class="icon-remove icon-white"></i> 删除</a>
+                            <a class="save_post_img_btn btn btn-info" href="javascript:void(0)"><i class="icon-ok icon-white"></i> 保存</a>
+                        </div>
+                    </div>
+                </div>
+        </span>
+        <!-- 图片cover o -->
+
+        $if post.postTemp == 4:
+            <section class="post-caption-wrap post-background-drop-target">
+                <section class="post-caption-valign">
+                    <section class="post-caption">
+                        <h1 class="post-title post_field" itemprop="name">
+                            <p>$post.postCaption</p>
+                        $if user.is_logged:
+                            $if user.id == post.postAuthor:
+                                <i class="icon post_field_edit icon-pencil"></i>
+                        </h1>
+                    $if user.is_logged:
+                        $if user.id == post.postAuthor and post.postTemp == 4:
+                            <form action="/post/$post.id/post_field_update" id="post_field_update_form" class="form-horizontal" autocomplete="off">
+                                 <div class="post_caption control-group">
+                                    <textarea class="input-xxlarge" placeholder="摘要" rows="4" name="post_Caption" id="post_Caption" datatype="post_Caption_4" errormsg="啊哈？超过35字了？">$:post.postCaption</textarea><span class="Validform_checktip"></span>
+                                </div>
+                                <div style="display:none" class="post_article control-group">
+                                    <textarea name="post_Article" id="post_Article" ></textarea>
+                                    
+                                </div>
+                                <button id="post_btn" class="btn btn-info">保存</button>
+                                <a href="javascript:void(0)" class="cancel_field_btn btn">取消</a>
+                            </form>
+                    </section>
+                </section>
+            </section>
+
+        </div>
+
+    <section class="post_content">
+        $if post.postTemp == 3:
+            <div style="position:relative;overflow: hidden;">
+        <header class="post_header">
+            <h1 class="post_title" itemprop="name">
+                <span>
+            $if post.postTemp == 4:
+                $post.postCaption
+            $else:
+                $post.postTitle
+                </span>
+            $if user.is_logged:
+                $if user.id == post.postAuthor:
+                    <i class="icon post_title_edit icon-pencil"></i>
+            </h1>
+                    
+            $if user.is_logged:
+                $if user.id == post.postAuthor and post.postTemp != 4:
+                    <form action="/post/$post.id/post_title_update" id="post_title_update_form" class="form-horizontal" autocomplete="off">
+                        <input type="text" class="input-xxlarge" placeholder="标题 必填" name="post_Name" id="post_Name" datatype="post_Name" errormsg="啊哈？超过30字了？" nullmsg="必填" value="$post.postTitle" /><span class="Validform_checktip"></span>
+                        <button class="post_btn btn btn-info">保存</button>
+                        <a href="javascript:void(0)" class="cancel_title_btn btn">取消</a>
+                    </form>
+            <div class="post_meta clearfix">
+                <a title="$post_author_info.nickname" href="/member/$post_author_info.username">
+                $if post_author_info.avatarPath:
+                    $if post_author_info.via == 0:
+                        $ src = '/static/upload/image' + post_author_info.avatarPath + '_48.jpg'
+                    $if post_author_info.via == 1:
+                        $ src = post_author_info.avatarPath
+                    <img class="post_author_image" src="$src" />
+                $else:
+                    <img class="post_author_image" src="/static/public/img/default_48x48.jpg" />
+                </a>
+                <div class="post_meta_info">
+                    <a class="post_author" title="$post_author_info.nickname" href="/member/$post_author_info.username">$post_author_info.nickname</a>
+                    <time class="post_date">$timestrf(post.creation_ts)</time>
+                </div>
+            </div>
+        </header>
+        $if post.postTemp != 4:
+            <div class="post_field">
+                <p class="post_caption">$post.postCaption</p> 
+                $ postArticle = youku(post.postArticle)
+                $ postArticle = tudou(postArticle)
+                $ postArticle = sinaimg(postArticle)
+                $ postArticle = xiami(postArticle)
+                $ postArticle = autolink(postArticle, nofollow=True)
+                <p>
+                    $:postArticle.replace("\r\n", "<br/>")
+                    $#:post.postArticle
+                </p>
+                $if user.is_logged:
+                    $if user.id == post.postAuthor:
+                        <i class="icon post_field_edit icon-pencil"></i>
+            </div>
+        $if user.is_logged:
+            $if user.id == post.postAuthor and post.postTemp != 4:
+                <!--编辑模式-->
+                <form action="/post/$post.id/post_field_update" id="post_field_update_form" class="form-horizontal" autocomplete="off">
+                     <div class="post_caption control-group">
+                        <textarea class="input-xxlarge" placeholder="摘要 选填" rows="3" name="post_Caption" id="post_Caption" datatype="post_Caption" errormsg="超过240字了？" ignore="ignore">$post.postCaption</textarea>
+                        <span class="Validform_checktip"></span>
+                    </div>
+                    <div class="post_article control-group">
+                        $if post.postTemp == 5:
+                            <textarea class="input-xxlarge" placeholder="正文 选填" rows="4" name="post_Article" id="post_Article" datatype="post_Article" errormsg="不少于50字" ignore="ignore">$post.postArticle</textarea>
+                        $else:
+                            <textarea class="input-xxlarge" placeholder="正文 必填" rows="9" name="post_Article" id="post_Article" datatype="post_Article" errormsg="不少于50字" nullmsg="必填">$post.postArticle</textarea>
+                        <span class="Validform_checktip"></span>
+                    </div>
+                    <div id="form_action_wrap">
+                        <button id="post_btn" class="btn btn-info">保存</button>
+                        <a href="javascript:void(0)" class="cancel_field_btn btn">取消</a>
+                    </div>
+                </form>
+
+        <div id="action_block">
+            $if user.is_logged:
+                <div class="btn-group
+                $if is_voted != 0:
+                        active
+                ">
+                    $if post.magnitude:
+                        <div class="btn btn-primary btn-likers">
+                            
+                            <span class="sentiment like_count">
+                                <i>$post.magnitude</i> 人
+                            </span>
+                        </div>
+                    <div post-data="$post.id" user-data="$user.id" class="btn btn-primary sentiment_with_vote_block">
+                        <span class="vote_block"></span>
+                        <span class="sentiment">
+                        $if is_voted != 0:
+                            取消喜欢
+                        $else:
+                            喜欢
+                        </span>
+                    </div>
+                </div>
+            
+            $else:
+                <div class="btn-group
+                $if is_voted != 0:
+                        active
+                ">
+                    $if post.magnitude:
+                        <div class="btn btn-primary btn-likers">
+                            <span class="vote_block"></span>
+                            <span class="sentiment">
+                                <i>$post.magnitude</i> 人
+                            </span>
+                        </div>
+                    <div post-data="$post.id" user-data="needLogin" class="btn btn-primary sentiment_with_vote_block">
+                        $if not post.magnitude:
+                            <span class="vote_block"></span>
+                        <span class="wf sentiment">喜欢</span>
+                    </div>
+                </div>
+
+            <div class="share_sns btn btn-primary">
+                $#if post.postTitle == '':
+                    $# share_title = post.postCaption.strip('')
+                $#else:
+                    $# share_title = post.postTitle.strip('')
+                $#if post.postImage:
+                    $# pic = 'http://www.biubiubiubiu.com'+ post.postImage + "_366.jpg"
+                $#else:
+                    $# pic = ""
+                <span class="share_block vote_block"></span>
+                <span class="sentiment">分享</span>
+                <ul class="share_sns_list">
+                    <li class="share_sns_icon spriter_douban"> <a title="分享到豆瓣" href="javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:'',r='http://www.douban.com/recommend/?url='+e(d.location.href)+'&title='+e(d.title)+'&sel='+e(s)+'&v=1',x=function(){if(!window.open(r,'douban','toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330'))location.href=r+'&r=1'};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()"><i></i></a></li>
+
+                    <!-- <li class="share_sns_icon spriter_weibo">
+                        <a target="_blank" rel="nofollow" title="分享到新浪微博" href="http://v.t.sina.com.cn/share/share.php?url=http://www.biubiubiubiu.com/post/$post.id&title=推荐 $post_author_info.nickname 在话题 “$node.nodeName” 中发布的：$#share_title。地址：&pic=$#pic&appkey=3800357802"><i></i></a>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+    $if post.postTemp == 3:
+        </div>
+    </section>
+
+        $if ntf_type == '2':
+            <section id="liker_block_wrap" style="display:block">
+        $else:
+            <section id="liker_block_wrap">
+        <div id="liker_block">
+            <div class="pull-right close_liker_block"><i class="icon icon-white icon-remove"></i></div>
+            <h5>喜欢这个片段的人</h5>
+            <ul class="user_list">
+            $for u in likers_list:
+                <li 
+                $if user.is_logged:
+                    $if u.id == user.id:
+                        id="mine-li"
+                >
+                
+                <a href="/member/$u.username" title="$u.nickname"><img src="$u.avatarPath" alt="$u.nickname" /></a></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="comment_block_wrap">
+        <div id="comment_block" class="clearfix ">
+            $if post.postTemp == 3 or post.postTemp == 4:
+                <div id="comment_block_top_bar">
+                    <div id="close_comment_block_wrap" class="pull-right"><i class="icon icon-white icon-remove"></i></div>
+            <h4><span class="comment_count">$post.comment_num</span> 评论</h4>
+            $if post.postTemp == 3 or post.postTemp == 4:
+                </div>
+
+            <ul id="comment_list">
+            $if comments:
+                $for i in xrange(len(comments)):
+                    <li id="comm_$comments[i].id">
+                        <div class="post_meta pic clearfix">
+                            <a class="post_author_image_w" title="$commenters[i].nickname" href="/member/$commenters[i].username">
+                                <img class="post_author_image" src="$commenters[i].avatarPath" alt="$commenters[i].nickname">
+                            </a>
+                        </div>
+                        <div class="comment-body">
+                            <div class="post_meta_info">
+                                <a class="post_author" title="$commenters[i].nickname" href="/member/$commenters[i].username">$commenters[i].nickname</a>
+                                <time class="post_date">$timestrf(comments[i].creation_ts)</time>
+                            </div>
+                            <p>$:comments[i].content</p>
+                        </div>
+                        <div class="comment_control">
+                        $if user.is_logged:
+                            $if user.id == comments[i].uid:
+                                <a href="javascript:void(0)" rel="nofollow" class="del_comment">删除</a>
+                            
+                        </div>
+                    </li>
+            </ul>
+            
+            $if user.is_logged:
+                <div id="add_new_comment">
+                    <div class="post_meta clearfix">
+                        <a href="/member/$user.username" title="$user.nickname">
+                            <img src="$user.avatarPath" class="post_author_image" alt="$user.nickname">
+                        </a>
+                        <div class="post_meta_info">
+                            <a href="/member/$user.username" title="$user.nickname" class="post_author">$user.nickname</a>
+                        </div>
+                    </div>
+                    <form id="postCommentForm" action="/post/$post.id/new_comment" class="form-horizontal clearfix">
+                        <textarea name="postComment" class="span8" id="commentContent" nullmsg="不写点什么吗？" errormsg="检查一下吧" autocomplete="off" datatype="postComment"></textarea>
+                        <span id="check_form" class="Validform_checktip"></span>
+                        <div class="form-actions span8 ">
+                            <p class="pull-left">还可以输入<span class="charsLeft go_green"></span>字</p>
+                            <button id="submitComment" type="submit" class="btn btn-primary pull-right">添加</button>
+                        </div>
+                        <input type="hidden" name="aid" value="$post.postAuthor" />
+                    </form>
+                </div>
+            $else:
+                <h3><a href="javascript:void(0)" id="login_to_add_comment" user-data="needLogin">登录</a> 后发表评论</h3>
+        </div>
+    </section>
+</div>
+
+$if user.is_logged:
+    <div id="empty_comm">
+        <div class="post_meta clearfix">
+            <a class="post_author_image_w" title="$user.nickname" href="/member/$user.username">
+                <img class="post_author_image" src="$user.avatarPath" alt="$user.nickname">
+            </a>
+        </div>
+        <div class="comment-body">
+            <div class="post_meta_info">
+                <a class="post_author" title="$user.nickname" href="/member/$user.username">$user.nickname</a>
+                <time class="post_date">刚刚</time>
+            </div>
+            <p></p>
+        </div>
+        <div class="comment_control">
+            <a class="del_comment" rel="nofollow" href="javascript:void(0)">删除</a>
+        </div>
+    </div>
+
+    $if rights > 1:
+        <div id="admin_rec_mess">推荐成功</div>
+
+</div>
+
+<script>
+jQuery(function(){
+    jQuery('body').addClass('new_post_template_$post.postTemp');
+    jQuery('#creatNewNode').remove();
+
+$if user.is_logged:
+    $if user.id == post.postAuthor:
+        //保存更换的片段图片
+        jQuery('.save_post_img_btn').click(function(){
+            // 需要判断是拖拽上传还是点击上传的
+            if (jQuery('.imageHolder').size() != 0){
+                var path = jQuery(".imageHolder").css("background-image").replace(/"/g,"").replace(/url\(|\)jQuery/ig, "");
+                h = path.split("/", 3).join("/");
+                d = path.replace(h, "");
+                p = d.split('_')[0] + "_" + d.split('_')[1] + "_" + d.split('_')[2];
+            } else {
+                var path = jQuery(".post_image_upload").css("background-image").replace(/"/g,"").replace(/url\(|\)jQuery/ig, "");
+                h = path.split("/", 3).join("/");
+                d = path.replace(h, "");
+                p = d.split('_')[0] + "_" + d.split('_')[1] + "_" + d.split('_')[2];
+            }
+
+            jQuery.ajax({
+                url:'/post/$post.id/post_image_update',
+                type:'POST',
+                data:{path:p},
+                dataType : "text",
+                success:function(mes){
+                    if (mes == 's'){
+                        if (jQuery('.imageHolder').size() > 0){
+                            var p = jQuery(".imageHolder").css("background-image");
+                        } else {
+                            var p = jQuery('.post_image_upload').css('background-image');
+                        }
+                        jQuery(".post_image").css({
+                            'background-image' : p
+                        });
+                        jQuery('.post_image_upload_wrap, .del_post_img, .save_post_img_btn').hide()
+
+                        if (jQuery('.imageHolder').size() > 0){
+                            jQuery(".preview").remove();
+                        }
+                        // jQuery(".post_image_upload").css({
+                        //     'background' :'#f9f9f9 url(/static/public/img/picture.png) center center no-repeat',
+                        //     'background-size' : 'auto',
+                        // });
+                        jQuery('.upload_btn, .message').show();
+
+                        jQuery('.change_post_image_btn').css({
+                            'background-color' : '#58AD69',
+                            'color' : '#fff'
+                        }).html('<i class="icon-pencil icon-white"></i> 更换图片');
+                    }
+                },
+                error:function(){
+                    alert('出错，可能是服务器那边出问题了，请联系管理员');
+                }
+            });
+        })
+
+        //切换片段标题编辑状态
+        var post_Name = jQuery('#post_Name').val();
+
+        jQuery('h1.post_title').hover(function(){
+            jQuery(this).addClass("post_title_hover");
+            jQuery(this).find('.post_title_edit').addClass("icon-white");
+        },function(){
+            jQuery(this).removeClass("post_title_hover");
+            jQuery(this).find('.post_title_edit').removeClass("icon-white");
+        })
+
+        //切换片段摘要、正文编辑状态
+        jQuery('.post_field').hover(
+            function(){
+            jQuery(this).addClass("post_field_hover");
+            jQuery(this).find('.post_field_edit').addClass("icon-white");
+        },function(){
+            jQuery(this).removeClass("post_field_hover");
+            jQuery(this).find('.post_field_edit').removeClass("icon-white");
+        })
+
+        // 文章页面”编辑“按钮的跟随
+        var pencil = jQuery('.post_page_content_wrap .post_field .post_field_edit'),
+            //按钮距离屏幕顶部距离
+            _defautlTop = pencil.offset().top,
+            //按钮距离屏幕左侧距离
+            _defautlLeft = pencil.offset().left,
+            //按钮默认样式记录，还原初始样式时候需要
+            _position = pencil.css('position'),
+            _top = pencil.css('top'),
+            _left = pencil.css('left'),
+            _zIndex = pencil.css('z-index'),
+            wa = jQuery('#form_action_wrap');
+
+        var comment_top = jQuery('#comment_block_wrap').offset().top; // 评论区距离顶部的距离
+
+        // 页面滚动事件
+        jQuery(window).scroll(function(){
+
+            // 如果滚动到内容部分，则固定按钮
+            if(jQuery(window).scrollTop() > _defautlTop){
+                jQuery('#test_log').html('1');
+                pencil.css({'position':'fixed','top': 10 ,'right': 'auto','z-index':99999,'left':_defautlLeft,});
+
+                if(jQuery('body').hasClass('new_post_template_1')){ // 如果是模板 1
+                    jQuery('#test_log').html('1.1');
+                    Top = _defautlTop - 537;
+                    wa.css({'position':'fixed', 'top': 10, 'right': 'auto', 'left':_defautlLeft + 15,'z-index':3}).animate(function(){
+                            top : Top -10
+                    },250);
+                } else if(jQuery('body').hasClass('new_post_template_5')){  // 如果是模板 5
+                    jQuery('#test_log').html('1.5');
+                    wa.css({'position':'fixed','top':10,'right': 'auto', 'left':_defautlLeft - 10,'z-index':3, 'width' : 42});
+                } else {
+                    jQuery('#test_log').html('1.2');
+                    wa.css({'position':'fixed','top':10,'right': 'auto', 'left':_defautlLeft + 10,'z-index':3});
+                }
+
+            } else{
+                jQuery('#test_log').html('2');
+                pencil.css({'position':'absolute','top':_top,'right': -38, 'left':'auto','z-index':_zIndex});
+
+                //如果是模板 1
+                if(jQuery('body').hasClass('new_post_template_1')){  // 如果是模板 1
+                    jQuery('#test_log').html('2.1');
+                    wa.css({'position':'absolute','top':10,'right': 'auto', 'left': 719,'z-index':3, 'width':150});
+                } else if(jQuery('body').hasClass('new_post_template_5')) { // 如果是模板 5
+                    jQuery('#test_log').html('2.5');
+                    wa.css({'position':'absolute','top':30,'right': 'auto', 'left':540,'z-index':3});
+                } else { // 如果是其他模板
+                    jQuery('#test_log').html('2.2');
+                    wa.css({'position':'absolute','top':10,'right': 'auto', 'left':720,'z-index':3, 'width':150});
+                }
+            }
+
+            // 如果滚动到评论区，则隐藏按钮
+            if(jQuery(window).scrollTop() > comment_top - 150){
+                jQuery('#test_log').html('6');
+                pencil.hide();
+                wa.hide();
+            } else {
+                pencil.show();
+                wa.show();
+            }
+        })
+
+    //评论字数检查
+    jQuery('#commentContent').focus(function(){
+        jQuery('#postCommentForm .form-actions').fadeIn(150);
+    })
+
+    jQuery('#commentContent').NobleCount('.charsLeft',{
+        on_negative: 'go_red',
+        on_positive: 'go_green',
+        max_chars: 500
+    });
+
+    
+
+//模板3 4 切换评论显示隐藏
+    jQuery('#switch_comment, #close_comment_block_wrap').click(SwitchCommentHandler);
+
+    function SwitchCommentHandler(){
+        var w_w = jQuery(window).width();
+        var w = w_w * 0.3 - 50;
+        if(jQuery('#comment_block_wrap').css('display') == 'none'){
+            jQuery('#commentContent, #comment_block_wrap .form-actions').width(w);
+            jQuery('.post_temp_3 , .post_temp_4').animate({
+                width :'70%'
+            },0);
+            jQuery('#comment_block_wrap').show().animate({
+                right :0
+            },0);
+            
+            jQuery('#creatNewNode').animate({
+                right : w_w * 0.3 + 60
+            },0);
+            jQuery('.avatar20').animate({
+                right : w_w * 0.3 + 10
+            },0);
+            //考虑到没有登录时的情况，登录按钮会遮住关闭侧栏的按钮，所以移动一下
+            jQuery('#goLoginBtn').animate({
+                right : w_w * 0.3 + 10
+            },0);
+            
+            // setTimeout(function(){
+                jQuery('#comment_block_top_bar').show();
+            // },0)
+            jQuery('#liker_block_wrap').hide();
+            
+        }else{
+            jQuery('#comment_block_top_bar').hide();
+            jQuery('.post_temp_3 , .post_temp_4').animate({
+                width :'100%'
+            },0);
+            jQuery('#comment_block_wrap').animate({
+                right : '-30%'
+            },0).fadeOut();
+            jQuery('.avatar20').animate({
+                right : 10
+            },0);
+            jQuery('#creatNewNode').animate({
+                right : 63
+            },0);
+            jQuery('#goLoginBtn').animate({
+                right : 10
+            },0);
+            //hide mention list
+            jQuery('#db-tagsug-list').hide();
+        }
+    }
+
+//模板3、4 滚动条
+//note : 考虑到chrome在 接收提醒类型 参数时，滚动条插件会导致右侧栏无法显示(奇怪的Bug)，暂时用原生态滚动条
+    // jQuery(".post_temp_3 #comment_block_wrap, .post_temp_4 #comment_block_wrap").niceScroll({
+    //     touchbehavior:false,
+    //     cursorcolor:"#777",
+    //     cursoropacitymax:0.8,
+    //     cursorwidth:8,
+    //     background:"none",
+    //     cursorborder:"none",
+    //     autohidemode:true,
+    //     boxzoom:false,
+    //     railalign: "right"
+    // })
+
+    // //滚动时固定头部bar 考虑到只有一条评论时滚动时会出现抖动的情况 暂时注释
+    // jQuery(".post_temp_3 #comment_block_wrap, .post_temp_4 #comment_block_wrap").scroll(function() {
+    //     var t = jQuery('#comment_block').offset().top;
+    //     if(t < -10){
+    //         jQuery('#comment_block_top_bar').addClass('fixTop').width('30%')
+    //     }
+    //     else{
+    //         jQuery('#comment_block_top_bar').removeClass('fixTop').width('auto')
+    //     }
+    // });
+
+$if user.is_logged:
+    //replay
+    // jQuery('.reply_to').click(function(){
+    //     var username = jQuery(this).attr('data'),
+    //         nickname = jQuery(this).parents('li').eq(0).find('.post_author_image_w').attr('title');
+    //     replyOne(nickname);
+    // })
+    // function replyOne(nickname){
+    //     replyContent = jQuery("#commentContent");
+    //     oldContent = replyContent.val();
+    //     prefix = " @" + nickname + " ";
+    //     newContent = ''
+    //     if(oldContent.length > 0){
+    //         if (oldContent != prefix) {
+    //             newContent = prefix + oldContent;
+    //         }
+    //     } else {
+    //         newContent = prefix
+    //     }
+    //     replyContent.focus();
+
+    //     replyContent.val(newContent);
+    // }
+
+    //删除评论
+    jQuery(".del_comment").live('click', function(){
+        var t = jQuery(this),
+            comm_id = t.parents('li').eq(0).attr('id').split('_')[1],
+            uid = $user.id,
+            pid = $post.id,
+            msg = "真的要删除吗？";
+
+        if (confirm(msg)==true){
+            // change the comment num
+            jQuery('.comment_count').html(Number(jQuery('.comment_count').html()) - 1)
+
+            jQuery.ajax({
+                type: "POST",
+                url : '/post/delete_comment',
+                data: {id:comm_id, uid:uid, pid:pid},
+                success: function(data) {
+                    jQuery("#comm_" + comm_id ).fadeOut();
+                },
+            });
+        }else{
+            return false;
+        }
+    })
+
+    //根据 url 的 ntf_type 参数，访问页面时默认打开对应提醒类型区域//如果是评论类的提醒，打开右侧评论区
+    $if ntf_type == '1' and (post.postTemp == 3 or post.postTemp == 4): 
+        SwitchCommentHandler();
+
+$if user.is_logged:
+    $if rights > 1:
+        /*admin*/
+        jQuery('#adminBar .admin_rec_post').click(function(){
+            var pid = $post.id;
+            jQuery.ajax({
+                url:'/admin/rec_post',
+                type:'POST',
+                data:{pid:pid},
+                dataType : "text",
+                success:function(mes){
+                    if (mes == 's'){
+                        jQuery('#admin_rec_mess').slideDown()
+                        setTimeout(function(){
+                            jQuery('#admin_rec_mess').slideUp()
+                        },2000)
+                    }
+                }
+            });
+        })
+})
+</script>
+
+$if user.is_logged:
+    <script src="/static/public/js/douban_tagsug.js"></script>
+    <script src="/static/public/js/mustache.js"></script>
+    <script type="text/javascript">
+    jQuery(function() {
+        // 添加评论时 @
+        var node_textarea = jQuery('#commentContent');
+        var replyUsers;
+        function getReplyUsers() {
+            replyUsers = [];
+            var pushed = {};
+            pushed["$user.username"] = 1;
+            jQuery('.pic a').each(function(i, item) {
+                    var img = item.childNodes[1];
+                    var uid = item.href.slice(item.href.lastIndexOf('/') + 1);
+
+                    if (!(uid in pushed)) {
+                        replyUsers.push({
+                            uid: uid,
+                            username: img.alt,
+                            avatar: img.src
+                        });
+                        pushed[uid] = 1;
+                    }
+                }
+            );
+        }
+
+        function filteredUser(keyword, limit, excludes) {
+            if (!replyUsers) getReplyUsers();
+            var limit = limit || 10;
+            var users = [];
+            var excludes = excludes || {};
+            for (var i = 0, len = replyUsers.length; i < len && users.length < limit; i++) {
+                var item = replyUsers[i];
+                if (item.uid in excludes) continue;
+                if (!keyword) {
+                    users.push(item);
+                    continue;
+                }
+                if (item.username.indexOf(keyword) !== -1) {
+                    users.push(item);
+                    continue;
+                }
+                if (item.uid.indexOf(keyword) !== -1) {
+                    users.push(item);
+                }
+            }
+            return {
+                users: users
+            }
+        }
+
+
+        var tagsug_api = node_textarea.tagsug({
+            // max: 10,
+            customData: filteredUser
+        })._tagsug_api[0];
+
+        node_textarea.parents('form').submit(function(e) {
+            node_textarea.val(tagsug_api.cleanVal(node_textarea.val()));
+            // change the comment num
+            if(node_textarea.val() != 0){
+                if(jQuery('#switch_comment span').size() > 0){
+                    jQuery('.comment_count').html(Number(jQuery('.comment_count').html()) + 1)
+                } else {
+                    jQuery('#switch_comment').addClass('fix_line').append('<span class="comment_count">1</span>')
+                }
+                
+                jQuery('#db-tagsug-list').hide().html('');
+                return false;
+            }
+        });
+
+        //验证表单 - 添加评论
+        jQuery("#postCommentForm").Validform({
+            ajaxPost:true,
+            tipSweep:true,
+            // postonce:true,
+            datatype : {
+                "postComment": /^[\w\W]{1,500}$$/
+            },
+            tiptype:function(msg,o,cssctl){
+                var objtip=o.obj.siblings(".Validform_checktip");
+                cssctl(objtip,o.type);
+                objtip.text(msg);
+            },
+            beforeSubmit:function(curform){
+                jQuery('#submitComment').html('发布中...').removeClass('btn-primary');
+            },
+            callback:function(data){
+                var str = jQuery('#commentContent').val(),
+                    regR = /\r/g,
+                    regN = /\n/g,
+                    reg_regchar = /@([a-zA-Z0-9][\w\-\.\_]+)/g,
+                    s = toTxt(str),
+                    s = s.replace(regR,"<br/>").replace(regN,"<br/>"),
+                    name_array = s.match(reg_regchar),
+                    new_name_array = [];
+
+                //new_name_array 是 从comment中过滤出来的 用户名 数组
+                // new_name_array = ['post-rocker', 'jiamama']
+                if(!name_array){
+                    // alert(0)
+                } else {
+                    jQuery.each(name_array, function(i, e){
+                        var k = e.replace('\@','');
+                        new_name_array.push(k);
+                    })
+
+                    var data_users = filteredUser()['users'],
+                    data_users_new = {},
+                    last_data = {};
+
+                    //重新整理filteredUser的数据
+                    //返回的是这样:
+                    /*
+                    data_users_new = {
+                        'jiamama'     : {"uid":"jiamama","username":"阿北打开电脑就","avatar":"xxxxxxx"},
+                        'yetone'      : {"uid":"yetone","username":"yetone","avatar":"xxxxxx"},
+                        'post-rocker' : {"uid":"post-rocker","username":"孬爷爷","avatar":"xxxxxx"},
+                        '51840976'    : {"uid":"51840976","username":"还我樱木花道","avatar":"xxx"}
+                    }
+                    */
+                    for(i=0; i < data_users.length; i++){
+                        data_users_new[data_users[i].uid] = data_users[i];
+                    }
+
+                    //根据 new_name_array 里的用户名 数量来替换 comment 的内容。
+                    for(i=0; i < new_name_array.length; i++){
+                        //如果在 全部的评论列表中的 usernames 中得不到new_name_array里的用户名
+                        if (!data_users_new[new_name_array[i]]){
+                            s = s //不替换。直接输出不存在的用户名 @xjsdsds
+                        } else{
+                            last_data[new_name_array[i]] = data_users_new[new_name_array[i]];
+                            s = s.replace('@'+new_name_array[i], '@<a href="/member/'+ last_data[new_name_array[i]].uid +'">' + last_data[new_name_array[i]].username + '</a>')
+                        }
+                    }
+                }
+                
+
+                if(data.status=="y"){
+                    jQuery('#submitComment').html('添加').addClass('btn-primary');
+                    jQuery('#comment_list li').removeClass('last');
+                    jQuery('#empty_comm p').html(s);
+                    var li = '<li class="last" id="comm_'+ data.comment_id +'">' + jQuery('#empty_comm').html(); + '</li>';
+                    jQuery('#comment_list').append(li);
+                    jQuery('#comment_list li.last').fadeIn();
+                    jQuery('#commentContent').val('');
+                    jQuery('#postCommentForm #check_form').attr('class','Validform_checktip').html('');
+                    jQuery('.form-actions .charsLeft').html('500');
+                }
+            }
+        })
+    });
+    </script>

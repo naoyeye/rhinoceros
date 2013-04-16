@@ -1,0 +1,153 @@
+$def with(user, profile, confirm)
+$var page_title:个人设置
+$#var jsfiles: /static/public/js/Validform_v5.1.js
+
+<div id="settings_page">
+    <header></header>
+    <div class="container">
+        <h1>个人设置</h1>
+        <section class="setting-module setting-module-notifications">
+            <div class="setting-module-info">
+                <h2 class="wf setting-module-header">邮件提醒
+                $if profile.email_subscribe == 1:
+                    <span id="email-subscribe-status"> <i class="icon icon_pass"></i> 已开启</span>
+                $if profile.email_subscribe == 0:
+                    <span id="email-subscribe-status"> <i class="icon icon_fail"></i> 已关闭</span>
+                </h2>
+                <p class="wf setting-module-desc">当别人喜欢、评论了你发布的片段，或者在你创建的话题下发布了一个新的片段时，你会收到提醒邮件</p>
+            </div>
+            <div class="setting-module-actions">
+            $if profile.email_subscribe == 0:
+                <button class="btn btn-info btn-email-subscribe show" data-action="email-subscribe">开启</button>
+                <button class="btn btn-info btn-email-unsubscribe hide" data-action="email-unsubscribe">关闭</button>
+            $elif profile.email_subscribe == 1:
+                <button class="btn btn-info btn-email-subscribe hide" data-action="email-subscribe">开启</button>
+                <button class="btn btn-info btn-email-unsubscribe show" data-action="email-unsubscribe">关闭</button>
+            </div>
+        </section>
+
+        <section class="setting-module setting-module-email">
+            <div class="setting-module-info">
+                <h2 class="setting-module-header">邮箱地址
+                $if confirm:
+                    $if confirm.confirmed == 1:
+                        <span class="f12" style="font-weight:normal"> <i class="icon icon_pass"></i> 已验证，修改后需要重新验证</span>
+                    $else:
+                        <span class="f12" style="font-weight:normal"> <i class="icon icon_fail"></i> 未验证，请通过邮箱中的激活邮件来验证</span>
+                </h2>
+            </div>
+            <div class="setting-module-actions">
+                <form id="setting-module-email-form" method="post" action="/settings/change_email">
+                $if confirm:
+                    $if confirm.confirmed == 1:
+                        <input name="email" type="email" datatype="e" nullmsg="请填写邮箱" errormsg="请检查邮箱格式" placeholder="邮箱地址" class="setting-module-input setting-module-email-input" value="$user.email" />
+                        <span class="Validform_checktip"></span>
+                        <a class="btn btn-info btn-edit-email" data-action="edit-email">修改</a>
+                        <span class="setting-module-email-controls btn-set hide">
+                            <button class="btn btn-info btn-save-email" data-action="save-email">保存</button>
+                            <a class="btn btn-cancel-email" data-action="cancel-email">取消</a>
+                        </span>
+                    $else:
+                        <span style="font-size:18px;">$confirm.email</span>
+                $else:
+                    $user.email
+                </form>
+            </div>
+            <div id="callbackTip"></div>
+        </section>
+</div>
+<script type="text/javascript">
+jQuery(function () {
+    // var user_id = $user.id
+    jQuery('#creatNewNode').remove()
+    jQuery('.biu_logo a').css({'background':'#111111'})
+    jQuery('#navbarWrapper nav, #feedbackBtn').css({'position':'absolute'})
+    jQuery('.navbar-inner .nav-collapse .nav').insertAfter('.navbar-inner .container nav')
+    jQuery('#navbarWrapper .navbar .nav > li.avatar20').css({'position':'absolute'})
+    jQuery('.navbar-inner .nav-collapse').remove()
+
+    //开启邮箱提醒
+    jQuery('.btn-email-subscribe').click(function(){
+        jQuery.ajax({
+            url:'/settings/email_subscribe',
+            type:'POST',
+            data:{ 'subscribe' : 'True'},
+            dataType : "text",
+            success:function(mes){
+                if (mes == 's'){
+                    jQuery('.btn-email-subscribe').removeClass('show').addClass('hide')
+                    jQuery('.btn-email-unsubscribe').removeClass('hide').addClass('show')
+                    jQuery('#email-subscribe-status').html('已开启')
+                }
+            }
+        });
+    })
+
+    //关闭邮箱提醒
+    jQuery('.btn-email-unsubscribe').click(function(){
+        jQuery.ajax({
+            url:'/settings/email_subscribe',
+            type:'POST',
+            data:{ 'subscribe' : 'False'},
+            dataType : "text",
+            success:function(mes){
+                if (mes == 's'){
+                    jQuery('.btn-email-subscribe').removeClass('hide').addClass('show')
+                    jQuery('.btn-email-unsubscribe').removeClass('show').addClass('hide')
+                    jQuery('#email-subscribe-status').html('已关闭')
+                }
+            }
+        });
+    })
+
+    //修改邮箱
+    function openEditEmail(){
+        jQuery('.setting-module-email-controls').removeClass('hide').addClass('show')
+        jQuery('.btn-edit-email').removeClass('show').addClass('hide')
+        jQuery('.setting-module-email-input').focus()
+    }
+
+    function closeEditEmail(){
+        jQuery('.setting-module-email-controls').removeClass('show').addClass('hide')
+        jQuery('.btn-edit-email').removeClass('hide').addClass('show')
+    }
+
+    jQuery('input.setting-module-email-input').focus(function(){
+        jQuery('.setting-module-email-controls').removeClass('hide').addClass('show')
+        jQuery('.btn-edit-email').removeClass('show').addClass('hide')
+    })
+    // jQuery('input.setting-module-email-input').blur(closeEditEmail)
+
+    jQuery('.btn-cancel-email').click(closeEditEmail)
+
+    jQuery('.btn-edit-email').click(openEditEmail)
+
+    jQuery('#setting-module-email-form').Validform({
+        tipSweep : true,
+        ajaxPost : true,
+        tiptype:function(msg,o,cssctl){
+            var objtip=o.obj.siblings(".Validform_checktip");
+            cssctl(objtip,o.type);
+            objtip.text(msg);
+        },
+        callback:function(data){
+            closeEditEmail();
+            if(!jQuery('#callbackTip').hasClass('alert')){
+                // alert(1)
+                jQuery('#callbackTip').attr('class', '').addClass('alert')
+            }
+            
+            if(data.code == 'y-y'){
+                jQuery('#callbackTip').attr('class', '').addClass('alert alert-success')
+            } else {
+                jQuery('#callbackTip').attr('class', '').addClass('alert alert-error')
+            }
+
+            jQuery('#callbackTip').html('').append(data.info)
+        }
+
+    })
+
+})
+</script>
+

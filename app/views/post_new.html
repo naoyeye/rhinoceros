@@ -1,0 +1,170 @@
+$def with(arg, node, user)
+$var page_title : 添加片段 - $node.nodeName
+$var jsfiles: /static/public/js/jquery.filedrop.js /static/public/js/post.js /static/public/redactor/zh_cn.js /static/public/redactor/redactor.min.js
+$var cssfiles: /static/public/css/post_image_upload.css /static/public/css/new_post_template_1.css  
+
+<style>
+#creatNewNode{display: none;}
+.editable{text-align:left;}
+</style>
+
+<link href="/static/public/redactor/redactor.css" rel="stylesheet"  />
+
+<div class="creat_new_post ">
+    <div class="post_node_link menu_box active">
+        <a class="node_link pull-left" title="返回话题 - $node.nodeName" href="/node/$node.id">
+            $if node.nodeImg:
+                <img class="post_node_link_img" src="/static/upload/node_img$node.nodeImg" width="40" height="40" />
+            $else:
+                <img class="post_node_link_img" src="/static/public/img/logo.png" width="40" height="40" />
+            <span class="post_node_link_arrow">&lt;</span>
+            <h3 class="post_node_link_name">$node.nodeName</h3>
+        </a>
+        <!-- <a href="javascript:void(0)" class="edit_switch pull-left" style="margin-left:1px;">取消</a> -->
+
+    </div>
+
+    <h1>添加一个新片段</h1>
+    <div class="note_tip_wrap">
+        <p class="tc note_tip">“片段”是针对话题的文章或者图片。
+            <a href="javascript:void(0)" class="close_note_tip" title="关闭"><i class="icon-remove-sign icon-white"></i><span>关闭</span></a>
+        </p>
+    </div>
+    <div class="new_post_page_content_wrap">
+        <section class="new_post_page_content">
+            
+            <div class="tabbable post_template_switch_tab">
+                <div class="wide_fix">
+                    <ul class="nav nav-tabs">
+                        <li class="template_1 active">
+                            <a href="javascript:void(0)" data-toggle="tab1">
+                                <span>宽屏大图+文字</span>
+                            </a>
+                        </li>
+                        <li class="template_2">
+                            <a href="javascript:void(0)" data-toggle="tab2">
+                                <span>文字，可加配图</span>
+                            </a>
+                        </li>
+                        <li class="template_3">
+                            <a href="javascript:void(0)" data-toggle="tab3">
+                                <span>整屏大图</span>
+                            </a>
+                        </li>
+                        <li class="template_4">
+                            <a href="javascript:void(0)" data-toggle="tab4">
+                                <span>大图+图片说明</span>
+                            </a>
+                        </li>
+                        <li class="template_5">
+                            <a href="javascript:void(0)" data-toggle="tab5">
+                                <span>竖版图片</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab1">
+                        <form action="/node/$node.id/post" id="post_form_1" class="form-horizontal" autocomplete="off">
+                        <div id="switchImgWrap" class="btn">上传图片</div>
+                        <div class="post_image_upload_wrap node_empty_border control-group">
+                            <div class="post_image_upload piu node_empty">
+                                <a href="javascript:void(0)" class="upload_btn btn btn-info" onclick="getElementById('upload_file_hide').click()">上传图片 或 拖拽图片到这里</a>
+                                <span class="message">
+                                    <i></i>
+                                    <p>拖拽图片到这里就会自动上传，请保证你上传图片的质量。支持jpg/png/bmp/gif格式，最大2M。</p>
+                                </span>
+                                <input type="file" name="uploadImg" id="upload_file_hide" />
+                                <input type="hidden" datatype="post_Img" id="post_Img_1" name="post_Img" errormsg="啊哈？出错了" nullmsg="你还没有上传图片。" />
+                                <span class="Validform_checktip postImgValidformChecktip"></span>
+                                
+                                <a class="del_post_img btn" href="javascript:void(0)"><i class="icon-remove icon-white"></i> 删除</a>
+                            </div>
+                        </div>
+                        <div class="post_name control-group">
+                            <input type="text" class="input-xxlarge" placeholder="标题 必填" name="post_Name" datatype="post_Name" errormsg="啊哈？超过20字了？" nullmsg="必填" />
+                            <span class="Validform_checktip"></span>
+                        </div>
+                        <div class="post_caption control-group">
+                            <textarea class="input-xxlarge" placeholder="摘要 选填" rows="3" name="post_Caption" datatype="post_Caption" errormsg="啊哈？超过240字了？" ignore="ignore"></textarea>
+                            <span class="Validform_checktip"></span>
+                        </div>
+                        <div class="post_article control-group">
+                            <textarea class="input-xxlarge" placeholder="正文 必填" rows="22" name="post_Article" datatype="post_Article" errormsg="50-6000字" nullmsg="必填">正文</textarea>
+                            <span class="Validform_checktip"></span>
+                        </div>
+                        <input type="hidden" name="user" value="$user.id" />
+                        <input type="hidden" name="temp" id="tempID" value="1" />
+                        <input type="hidden" name="nodeID" id="nodeID" value="$node.id" />
+                        <div class="btn_controls">
+                            <button id="publish_btn" class="btn btn-large btn-info">保存</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            
+        </section>
+    </div>
+</div>
+<script>
+
+//关闭提示
+jQuery.cookie = function(name, value, options) {
+    if (typeof value != 'undefined') {
+        options = options || {};
+        if (value === null) {
+            value = '';
+            options = jQuery.extend({}, options);
+            options.expires = -1;
+        }
+        var expires = '';
+        if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) {
+            var date;
+            if (typeof options.expires == 'number') {
+                date = new Date();
+                date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000));//day * 24hour  60min  60sc  1000haomiao
+            } else {
+                date = options.expires;
+            }
+            expires = '; expires=' + date.toUTCString();
+        }
+        var path = options.path ? '; path=' + (options.path) : '';
+        var domain = options.domain ? '; domain=' + (options.domain) : '';
+        var secure = options.secure ? '; secure' : '';
+        document.cookie = [name, '=', encodeURIComponent(value), expires, domain, path, secure].join('');
+    } else {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+};
+var pa=jQuery.noConflict();
+
+pa(function () {
+    var panda =pa(".note_tip_wrap");
+    panda.find(".close_note_tip").click(function(){
+        panda.slideUp(240);
+        pa.cookie('note_tip_wrap_post','close',{ expires: 7, path: '/'});
+    });
+    var hc = pa.cookie('note_tip_wrap_post');
+    if(hc=="close"){
+        panda.hide()
+    }else{
+        panda.show()
+    }
+
+    jQuery('body').addClass('new_post_template_1').attr('publish','true');
+});
+
+</script>

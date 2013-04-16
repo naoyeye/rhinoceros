@@ -1,0 +1,14 @@
+$def with(msg)
+$var page_title : 邮箱验证
+<br/>
+<br/>
+<br/>
+$if msg == "out-time":
+	<p style="text-align:center">
+		<i class="icon icon-remove"></i> 验证码已失效，请重新验证
+	</p>
+$elif msg == "succes":
+	<p style="text-align:center">
+		<i class="icon icon-ok"></i> 恭喜！邮箱验证成功！
+	</p>
+	<p style="text-align:center"><a href="/">返回首页</a></p>

@@ -1,0 +1,181 @@
+$def with(r, delta, user_count, node_count, post_count,  vote_count, comm_count)
+$var page_title : 
+$var cssfiles: /static/public/css/landing.css
+$# note var cssfiles: /static/public/css/landing.css /static/public/css/jquery.motionCaptcha.0.2.css
+$# note var jsfiles: /static/public/js/Validform_v5.1.js /static/public/js/landing.js /static/public/js/passwordStrength-min.js /static/public/js/jquery.motionCaptcha.0.2.js
+
+<script>
+jQuery(function(){
+        //浏览器
+    if(jQuery.browser.msie){//若是ie浏览器
+        jQuery('#detect').show()
+    }
+
+    function detectOS(){
+        var sUserAgent = navigator.userAgent;
+        var isWin = (navigator.platform == "Win32") || (navigator.platform == "Windows");
+        var isac = (navigator.platform == "Mac68K") || (navigator.platform == "MacPPC") || (navigator.platform == "Macintosh" || navigator.platform == 'MacIntel');
+        if(isMac) return "Mac";
+        var isUnix = (navigator.platform == "X11") && !isWin && !isMac;
+        if(isUnix) return "Unix";
+        if(isWin)
+        {
+            jQuery('#detect').show()
+            // var isWin95 = sUserAgent.indexOf("Win95") > -1 || sUserAgent.indexOf("Windows 95") > -1;
+            // if(isWin95) return "Win95";
+            // var isWin98 = sUserAgent.indexOf("Win98") > -1 || sUserAgent.indexOf("Windows 98") > -1;
+            // if(isWin98) return "Win98";
+            // var isWinME = sUserAgent.indexOf("Windows 9x 4.90") > -1 || sUserAgent.indexOf("Windows ME") > -1;
+            // if(isWinME) return "WinME";
+            // var isWin2K = sUserAgent.indexOf("Windows NT 5.0") > -1 || sUserAgent.indexOf("Windows 2000") > -1;
+            // if(isWin2K) return "Win2000";
+            // var isWinXP = sUserAgent.indexOf("Windows NT 5.1") > -1 || sUserAgent.indexOf("Windows XP") > -1;
+            // if(isWinXP) return "WinXP";
+
+        }
+        // return "None";
+    }
+    // alert(navigator.platform)
+    detectOS()
+
+    // function randomNumber(limit){
+    //     return Math.floor(Math.random()*limit)+1;
+    // }
+    // jQuery('#landingWrapper').css({
+    //     'background-image' : 'url(/static/public/img/landing_bg/' + randomNumber(15) +'.jpg)'
+    // })
+})
+</script>
+$ img = '/static/public/img/landing_bg/' + r + '.jpg'
+<div id="landingWrapper" style="background-image:url($img)">
+    <div id="l_over"></div>
+    <div id="landingMain" class="span8">
+        <div id="landingLogo">
+            <a href="/"><img src="/static/public/img/logo.png" /><h1>Biu</h1></a>
+            <span id="version">Beta 5.0</span>
+        </div>
+        <div id="landingContent">
+            <!-- <div class="span5"> -->
+            <h2>阅读、观看、思考、交流</h2>
+            <!-- <a href="javascript:void(0)" id="goReg" class="btn btn-large btn-block btn-success">注册</a></div> -->
+            <a class="sns_connect_btn connect_douban_btn" href="/connect/douban"><i></i><span>使用豆瓣登录</span></a>
+
+            <p id="status"> 上线第$delta天 - $user_count位用户 - $node_count个话题 - $post_count个片段 - $vote_count次喜欢 - $comm_count条评论</p>
+
+$#            <div id="formWrap">
+$#                <form id="landingForm" autocomplete="off" action="" method="post">
+$#                    <div id="regWrap">
+$#                        <h4>注册</h4>
+$#                        
+$#                        <div class="controls">
+$#                            <input name="regNickname" type="text" datatype="*1-10" nullmsg="请填写昵称" errormsg="1-10个字符" placeholder="给自己起一个名号" class="span3"/><span class="Validform_checktip">1-10个字符</span>
+$#                        </div>
+
+$#                        <div class="controls">
+$#                            <input id="regUserName" name="regUserName" type="text" placeholder="用户名" ajaxurl="/account/check_username"  class="span3" datatype="regUserName" errormsg="以字母开头的2-16个字母、数字组合" nullmsg="用户名是必须的" /><span class="Validform_checktip"><i class="longTip">以字母开头的2-16个字母、数字组合，同时也会是你主页URL的一部分</i></span>
+$#                        </div>
+
+$#                        <div class="controls">
+$#                            <input name="regEmail" type="text" datatype="e" nullmsg="请填写邮箱" ajaxurl="/account/check_email" errormsg="请检查邮箱格式" placeholder="邮箱" class="span3"/><span class="Validform_checktip"></span>
+$#                        </div>
+
+$#                        <div class="controls">
+$#                            <input type="password" name="regUserPassword" placeholder="密码" datatype="*6-16" errormsg="密码范围在6~16位之间" plugin="passwordStrength" class="span3"/>
+$#                            <span class="Validform_checktip">6-16个字符</span>
+$#                            <div class="passwordStrength" style="display:none;"><b>密码强度：</b> <span>弱</span><span>中</span><span class="last">强</span></div>
+$#                        </div>
+
+$#                        <div class="controls">
+$#                            <input type="password" name="regUserPassword2" placeholder="确认密码" datatype="*6-16" class="span3" datatype="*" recheck="regUserPassword" nullmsg="请再输入一次密码！" errormsg="您两次输入的账号密码不一致！" />
+$#                            <span class="Validform_checktip"></span>
+$#                        </div>
+
+$#                        <div class="controls">
+$#                            <div id="mc">
+$#                                <canvas id="mc-canvas"></canvas>
+$#                            </div>
+$#                            <span class="Validform_checktip">请重新描绘右侧图形，大概意思即可</span>
+$#                        </div>
+
+$#                        <div class="form-actions"><input type="submit" id="regButton" class="btn btn-success btn-block btn-large" disabled="disabled" value="注册" /></div>
+
+$#                    </div>
+$#                </form>
+$#                <form id="landingForm2" autocomplete="off" action="/account/landing_login" method="post">
+$#                    <div id="loginWrap">
+$#                        <div class="input-prepend">
+$#                            <span class="add-on"><i class="icon-envelope"></i></span>
+$#                            <input name="loginEmail" type="text" placeholder="邮箱" class="span3"/>
+$#                            <span class="Validform_checktip"></span>
+$#                        </div>
+$#                        <div class="input-prepend">
+$#                            <span class="add-on"><i class="icon-lock"></i></span>
+$#                            <input name="loginPassword" type="password" placeholder="密码" class="span3"/>
+$#                            <a id="forgotButton" href="javascript:void(0)">忘记密码?</a>
+$#                        </div>
+
+$#                        <input type="submit" id="loginButton" class="btn btn-success" value="登录"><span id="msgdemo2"></span>
+$#                    </div>
+$#                </form>
+$#                <form id="landingForm3" autocomplete="off" action="/account/landing_forgot" method="post">
+$#                    <div id="forgotWrap">
+$#                        <div class="input-prepend help-inline">
+$#                            <input name="forgotEmail" type="text" placeholder="输入你的注册邮箱" datatype="e" nullmsg="请填写邮箱" errormsg="请检查邮箱格式" class="span3"/>
+$#                            <span class="Validform_checktip"></span>
+$#                        </div>
+$#                        <div class="help-inline" style="vertical-align: top;">
+$#                            <input type="submit" id="loginButton" class="btn btn-success" value="发送邮件"><span id="msgdemo3"></span>
+$#                        </div>
+$#                    </div>
+$#                </form>
+$#            </div>
+
+$#            <div id="buttonGroup">
+$#                <a id="reg_link" href="javascript:void(0)"><i class="icon_26 icon-reg"></i><span>注册<b></b></span></a>
+$#                <a id="login_link" href="javascript:void(0)"><i class="icon_26 icon-login"></i><span>登录<b></b></span></a>
+$#            </div>
+        </div>
+    </div>
+    <div id="via">
+        $if r == '1':
+            ‘37°2 le matin’ - film by Jean-Jacques Beineix
+        $elif r == '2':
+            Pink Floyd - Live at Pompeii, 1972
+        $elif r == '3':
+            David Hockney in Lucian Freud's Studio
+        $elif r == '4':
+            The Soviet–led invasion of Prague, photo by Josef Koudelka
+        $elif r == '5':
+            'Pauline at the Beach' - film by Eric Rohmer , 1983
+        $elif r == '6':
+            Mick Jagger, Catherine Deneuve and Andy Warhol at Montauk, 1975
+        $elif r == '7':
+            Michael Borremans
+        $elif r == '8':
+            Mark Tansey, Action Painting II, 1984
+        $elif r == '9':
+            阿城
+        $elif r == '10':
+            John Thomson
+        $elif r == '11':
+            Antonio Canova 's Psyche and Cupid
+        $elif r == '12':
+            Lake House by David Guerra
+        $elif r == '13':
+            Orville Wright soaring in his 1911 glider at Big Kill Devil Hill, OCT. 24, 1911
+        $elif r == '14':
+            photo by Bruno Barbey 1968 - FRANCE. Paris. May 68. Bank. During demonstrations.
+        $elif r == '15':
+            'Pulp Fiction' - film by Quentin Tarantino , 1994
+        $elif r == '16':
+            'Astronaut on fire' by <a href="http://www.jackcrossing.com" style="color:#999" target="_blank">Jack Crossing</a>
+        $elif r == '17':
+            Before an attack on a Vietcong camp near the Cambodian border, by Horst Faas, 1965.
+
+
+    </div>
+</div>
+
+<div id="detect">
+    如果想体验最佳浏览效果，请使用 Firefox 或者 Chrome 浏览器。此网站不对IE内核浏览器（包括国产360浏览器、腾讯TT等）和Windows系统做兼容。
+</div>

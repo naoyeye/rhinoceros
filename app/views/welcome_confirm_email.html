@@ -1,0 +1,31 @@
+$def with(user, msg)
+
+<div id="send_email_feedback_wrap">
+    <div id="send_email_feedback">
+    $if msg == 'succes':
+        $var page_title : 激活成功
+        <h2>激活成功, <span id="init_value"></span>秒后自动跳转到首页</h2>
+        <script>
+        var timeout = 3;
+        function show() {
+            var showbox = jQuery("#init_value");
+            showbox.html(timeout);
+            timeout--;
+            if (timeout == 0) {
+                window.opener = null;
+                window.location.href = "/";
+
+            }
+            else {
+                setTimeout('show()', 1000);
+            }
+        }
+        show();
+        </script>
+    $elif msg == 'out-time':
+        $var page_title : 已失效
+        <h2>因24小时内未激活，链接已失效</h2>
+        <p style="padding-top:20px;"><a href="/welcome/$user.username">重新发送激活邮件</a></p>
+    </div>
+</div>
+

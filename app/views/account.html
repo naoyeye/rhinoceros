@@ -1,0 +1,72 @@
+$def with (show, login_form, register_form, forgot_password_form, reset_password_form, token, on_success_message='', error_message='')
+<div style="background:#f9f9f9;height: 100%;">
+    <div class="container">
+        <div style="margin-top:100px;text-align: center;">
+        $if show in ['login_only']:
+            $var page_title: 登录
+            <form method="post" class="default_form login_form" action="/account/login">
+                <fieldset>
+                <legend>登录: </legend>
+                $:login_form.render_css()
+                <div>
+                    <button type="submit" class="btn btn-primary"/>登录</button>
+                </div>
+                <a href="/account/forgot">忘记密码</a>
+                <input type="hidden" name="show" value="$show"/>
+                </fieldset>
+            </form>
+
+        $if show in ['register_only']:
+            $var page_title: 注册
+            <form method="post" class="default_form register_form" action="/account/register">
+                <fieldset>
+                <legend>新用户注册:</legend>
+                $:error_message
+                $:register_form.render_css()
+                <div><button type="submit" class="btn btn-primary"/>注册</button></div>
+                <input type="hidden" name="show" value="$show"/>
+                </fieldset>
+            </form>
+
+        $if show in ['forgot_password_only']:
+            $var page_title: 忘记密码
+            <form method="post" class="default_form forgot_password_form" action="/account/forgot">
+                <fieldset>
+                <legend>忘记密码？</legend>
+                $:error_message
+                $:forgot_password_form.render_css()
+                <button type="submit" class="btn btn-success" style="vertical-align: top;"/>提交</button>
+                <input type="hidden" name="show" value="$show"/>
+                </fieldset>
+            </form>
+
+
+        $if show in ['reset_password_only']:
+            $var page_title: 重置密码
+            <form method="post" class="default_form reset_password_form" action="/account/reset/$token">
+                <fieldset>
+                <legend>重置密码</legend>
+                $:error_message
+                $:reset_password_form.render_css()
+                <div><button type="submit" class="btn btn-primary"/>提交</button></div>
+                <input type="hidden" name="show" value="$show"/>
+                </fieldset>
+            </form>
+            <!-- <script type="text/javascript">
+            // $("#submit").click(function(){
+            //     alert(1)
+            //     var again = $("#again").value(),
+            //         pwd = $("#password").value();
+            //     if(again!= pwd){
+            //         $(".wrong").html('两次输入的密码不一致');
+            //         return false;
+            //     }
+            // })
+            // </script>    
+            -->
+        $if show in ['reset_password_success']:
+            $var page_title: 找回密码
+            <h3>$on_success_message</h3>
+        </div>
+    </div>
+</div>

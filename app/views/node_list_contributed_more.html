@@ -1,0 +1,23 @@
+$def with(nodeList, authors)
+<div class="profile_items">
+$if nodeList:
+    <ul>
+    $for i in xrange(len(nodeList)):
+        <li item-data="$nodeList[i].id" class="node_card_list_item">
+            <a href="/node/$nodeList[i].id" title="$nodeList[i].nodeName" class="node_card clearfix">
+                $if nodeList[i].nodeImg:
+                    $ url = "/static/upload/node_img" + nodeList[i].nodeImg
+                $else:
+                    $ url = "/static/public/img/logo.png"
+                <span class="node_card_image" style="background-image:url($url)"></span>
+                <hgroup>
+                    <h2>$nodeList[i].nodeName</h2>
+                    <h3>$authors[i].nickname 创建</h3>
+                </hgroup>
+                <div class="node_card_meta">
+                    <div class="node_card_meta_post_count">$nodeList[i].postMount 个片段</div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>

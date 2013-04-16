@@ -1,0 +1,134 @@
+$def with (users, pager, u, permissions, rights, timestrf, admin_list)
+
+$var page_title : 用户管理
+$var cur : admin_users
+<style>
+#admin_wrapper{background: #EDEDEB}
+a.node_card{background:#f5f5f5;box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);}
+</style>
+
+<section class="admin_node_page_content node_page_content" style="margin-top:0px;padding-top:0;">
+<h4>用户管理</h4>
+<p>2013-01-28更新：取消了创建内容的权限限制。用户进来后，默认就是中级用户。
+    $if rights == 3:
+        如果想封禁某个用户，或者禁止ta发布内容，可以将其"设为普通"。
+</p>
+    <ul class="clearfix">
+    $for i in xrange(len(users)):
+        $if users[i].id != 1:
+            <li class="node_card_list_item rights_$permissions[i].rights" item-data="$users[i].id">
+                <a target="_blank" href="/member/$users[i].username" title="$users[i].nickname" class="node_card clearfix">
+                    $if users[i].avatarPath:
+                        $if users[i].via == 0:
+                            $ src = '/static/upload/image' + users[i].avatarPath + '_48.jpg'
+                        $if users[i].via == 1:
+                            $ src = users[i].avatarPath
+                    $else:
+                        $ src = "/static/public/img/default_48x48.jpg"
+
+                    <span class="node_card_image" style="background-image:url($src)"></span>
+                    <hgroup>
+                        <h2>$users[i].nickname</h2>
+                        <h3>$users[i].joinTime 加入</h3>
+                    </hgroup>
+                    <ul class="node_card_meta">
+                        <li class="node_card_meta_post_count">
+                            $if permissions[i].rights == 0:
+                                $ u_rights = '普通'
+                            $if permissions[i].rights == 1:
+                                $ u_rights = '中级'
+                            $if permissions[i].rights == 2:
+                                $ u_rights = '管理'
+                            <span class="fc_rights_$permissions[i].rights">$u_rights</span>
+                        </li>
+                        <li>ID: $users[i].id</li>
+                    </ul>
+                    <div class="node_card_meta">
+                    $if permissions[i].operator :
+                        $admin_list[i].nickname
+                    $else:
+                        无
+                    $if permissions[i].operating_ts:
+                        $timestrf(permissions[i].operating_ts)
+                    $else:
+                        无
+                    <!-- 更改 -->
+                    </div>
+                </a>
+            $if rights == 3:
+                <a href="javascript:void(0)" title="注销此用户" class="del_rec"><i class="icon icon-remove icon-white"></i></a>
+                <ul class="change_user_rights" id="uid_$users[i].id" douban_id="$users[i].douban_id" uid='$users[i].id'>
+                    <li><i class="icon-white icon icon-remove"></i> <a href="javascript:void(0)" rights="0">设为普通</a></li>
+                    <li><i class="icon-white icon icon-ok"></i> <a href="javascript:void(0)" rights="1">设为中级</a></li>
+                    <li><i class="icon-white icon icon-user"></i> <a href="javascript:void(0)" rights="2">设为管理</a></li>
+                </ul>
+            </li>
+    </ul>
+    $def show_paging():
+        $if pager.leftmost_a or pager.leftmost_a == 0:
+            <a href="/admin/users?start=$pager.leftmost_a">&laquo; 第1页</a>
+        $if pager.left_a or pager.left_a == 0:
+            <a href="/admin/users?start=$pager.left_a">&#8249; 上一页</a>
+        第 $(pager.start + 1) —  
+        $if pager.right_a: 
+            $pager.right_a 条
+        $else:
+            $pager.max_results  条
+        共 $pager.max_results 条
+        $if pager.right_a:
+            <a href="/admin/users?start=$pager.right_a">下一页 &#8250;</a>
+        $if pager.rightmost_a:
+            <a href="/admin/users?start=$pager.rightmost_a">末页 &raquo;</a>
+
+    $if pager and pager.max_results:
+        <div class="paging">
+        <span>$:show_paging()</span>
+        </div>
+</section>
+
+<script>
+//更改权限
+    jQuery(".change_user_rights a").click(function(){
+        var t = jQuery(this),
+            rights = t.attr('rights'),
+            douban_id = t.parents('ul').eq(0).attr('douban_id');
+
+        jQuery.ajax({
+            url:'/admin/change_user_rights',
+            type:'POST',
+            data:{douban_id: douban_id, rights : rights},
+            dataType : "text",
+            success:function(mes){
+                // jQuery('#uid_' + mes.uid).hide()
+                t.parents('li').eq(1).attr('class','').addClass('node_card_list_item').addClass('rights_'+rights)
+                if (rights == 0){
+                    t.parents('li').eq(1).find('.node_card_meta_post_count span').attr('class','').html('普通').addClass('fc_rights_0')
+                }
+                if (rights == 1){
+                    t.parents('li').eq(1).find('.node_card_meta_post_count span').attr('class','').html('中级').addClass('fc_rights_1')
+                }
+                if (rights == 2){
+                    t.parents('li').eq(1).find('.node_card_meta_post_count span').attr('class','').html('管理').addClass('fc_rights_2')
+                }
+            }
+        });
+    })
+
+//删除用户
+    jQuery('.admin_node_page_content .del_rec').click(function(){
+        var con = confirm('确定要删除吗？');
+        if (con == true){
+            var li = jQuery(this).parents("li").eq(0),
+                uid = li.attr('item-data');
+            jQuery.ajax({ 
+                type: "post", 
+                dataType : "text",
+                url: "/admin/users/del_users",
+                data: { uid: uid },
+                success: function(msg) { 
+                     li.fadeOut()
+                } 
+            }); 
+        }
+    })
+</script>

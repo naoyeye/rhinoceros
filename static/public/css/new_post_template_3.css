@@ -1,0 +1,8 @@
+.new_post_template_3 #post_form_1{overflow: hidden;}
+.new_post_template_3 .post_image_upload_wrap{width: auto!important;height: 670px!important;border: none!important;margin: 0!important;}
+.new_post_template_3 .post_image_upload, 
+.new_post_template_3 .post_image_upload .imageHolder{background-position: center center}
+.new_post_template_3 .post_name{position: relative; margin-top: -50px;text-align: left;padding-left: 50px;}
+.new_post_template_3 .post_caption,
+.new_post_template_3 .post_article{display: none;}
+.new_post_template_3 #post_form_1 .btn{position: relative;margin-top: 30px;}

@@ -1,0 +1,39 @@
+$def with(u, liked_posts, nodes, authors)
+$if liked_posts:
+    <div class="post_list_wrap clearfix">
+        <ul>
+        $for i in xrange(len(liked_posts)):
+            <li class="post_list item_temp_$liked_posts[i].postTemp
+            $if not liked_posts[i].postImage : 
+                item_no_img
+            ">
+                <div class="post_link_wrap">
+                    <a href="/post/$liked_posts[i].id">
+                        $if liked_posts[i].postImage:
+                            <span class="item_image_wrap">
+                                $if liked_posts[i].postTemp == 1 or liked_posts[i].postTemp == 2:
+                                    $ img = liked_posts[i].postImage + "_365.jpg"
+                                $elif liked_posts[i].postTemp == 3 or liked_posts[i].postTemp == 4 or liked_posts[i].postTemp == 5:
+                                    $ img = liked_posts[i].postImage + "_366.jpg"
+                                <span class="item_image" style="background-image:url($img)"></span>
+                            </span>
+                        <div class="post_cont">
+                            $if liked_posts[i].postTemp == 4:
+                                <div class="vertical-align"><h1>$liked_posts[i].postCaption</h1></div>
+                            $else:
+                                <h1>$liked_posts[i].postTitle</h1>
+                            $if liked_posts[i].postTemp != 3 and liked_posts[i].postTemp != 4 and liked_posts[i].postTemp != 5:
+                                <p class="snippet">
+                                $filter_tags(liked_posts[i].postArticle[0:850])
+                                </p>
+                            <div class="gradient"></div>
+                        </div>
+                    </a>
+                
+                    <div class="meta">
+                        <span class="post_author"><a target="_blank" title="$authors[i].nickname" href="/member/$authors[i].username">$authors[i].nickname</a> 发布在 <a class="post_belong_node" title="$nodes[i].nodeName" href="/node/$nodes[i].id">$nodes[i].nodeName</a></span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>

@@ -1,0 +1,22 @@
+$def with(img_id, img, usernnames, author)
+$var page_title: 喜欢$img.imageTitle的人
+
+<a href="/photo/$img_id"><img src="$img.path=s80-c" /></a>
+<p>by <a target="_blank" title="查看ta的豆瓣页面" href="/member/$author.username">$author.nickname</a> </p>
+<h2>喜欢 <a href="/photo/$img_id">$img.imageTitle</a> 的人：</h2>
+
+<h3>共$img.favo_num</h3>
+$if usernnames:
+    <ul id="user_list">
+    $for u in usernnames:
+        <li>
+            $if u.avatarPath:
+                $ src = '/static/upload/image' + u.avatarPath + '_48.jpg'
+                <a target="_blank" title="查看ta的豆瓣页面" href="/member/$u.username" class="avatar"><img src="$src" alt="" /></a>
+            $else:
+                <a target="_blank" title="查看ta的豆瓣页面" href="/member/$u.username" class="avatar"><img src="/static/public/img/default_48x48.jpg" alt="" /></a>
+            <p><a target="_blank" title="查看ta的豆瓣页面" href="/member/$u.username"> $u.nickname</a></p>
+        </li>
+    </ul>
+$else:
+    <p>木有 ╮(╯_╰)╭</p>

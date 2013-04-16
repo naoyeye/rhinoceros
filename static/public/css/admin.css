@@ -1,0 +1,70 @@
+html,body{height: 100%}
+#admin_wrapper{/*background:#e9f9e8 url(/static/public/img/body-bg.gif) ;*/height:auto;background: #EDEDEB;}
+header{margin: 0px 65px 0 65px;padding-top:20px;min-width: 770px;}
+.admin_post_page_content{width: 1155px;margin: 0 auto}
+.admin_post_page_content li.sortable-placeholder {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 3px dashed #bbb;
+    background:#eee;
+    float: left;
+    height: 418px;
+    width: 365px;
+    margin:10px; 
+}
+.admin_node_page_content li.sortable-placeholder {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 3px dashed #bbb;
+    background:#eee;
+    float: left;
+    height: 215px;
+    width: 267px;
+    margin:10px;
+
+    
+}
+
+.del_rec{display:none;position: absolute;top:0;right:0;padding:8px 10px;background:#c00;}
+li:hover .del_rec{display:inline;}
+.change_user_rights{display: none;position:absolute;bottom: -10px;left: 0;background: rgba(204,0,0,0.8);padding:5px 10px;width:249px;}
+.change_user_rights li{float: left;font-size: 13px;}
+.change_user_rights li:after{content: ' ';font-size: 20px;vertical-align: -3px;padding: 0 6px;color: #fff;}
+.change_user_rights li a{color: #fff}
+li:hover .change_user_rights{display: block;}
+.del_rec:hover{background:#e6884a;}
+
+.admin_node_page_content li.node_card_list_item{position: relative;}
+#control_bar{display: none;position: fixed;bottom:0;left: 0;z-index: 4;width: 100%;padding:10px 0;background-color: rgba(0,0,0,0.7);text-align: center;}
+
+.feedback_box{
+    display: none;
+    position: fixed;
+    top: 0 ;
+    left: 50%;
+    margin-left:-100px;
+    background-color: #549962;
+    width: 200px;
+    text-align: center;
+    padding:10px 0;
+    color: #fff;
+    font-size: 14px;
+    z-index: 4;
+    border-radius: 0 0 10px 10px;
+    -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.4);
+    box-shadow: 0 0 3px rgba(0,0,0,0.4);
+}
+
+.paging{text-align:center;padding: 10px 0;font-size: 14px;}
+.rights_1 a.node_card{background: #fff}
+.rights_2 a.node_card{background: #e3d5e8}
+.fc_rights_1{color:#5f9a67;}
+.fc_rights_2{color:#8b5f9a;}
+
+.collapse {overflow: visible;}
+
+
+

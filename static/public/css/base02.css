@@ -1,0 +1,113 @@
+body{background: #f2f2f0;}
+a{font-size: 12px;color: #60BF73}
+a:focus{outline: none;}
+a:hover{color:#3DA4CC;color:#549962;-webkit-transition: 0.4s; -moz-transition: 0.4s;transition: 0.4s;}
+/*ul,li{padding:0;margin: 0;list-style: none;}*/
+
+#base02_wrapper{text-align: center;}
+.base02_inner{width: 600px;margin: 0 auto;}
+
+
+#base02_body{}
+
+#base02_wrapper header{text-align: center;}
+header{padding:30px 0 20px 0;}
+header a{display: block;height: 50px;width: 100px;margin: 0 auto; background: url(/static/public/img/logo_100x50.png) center center no-repeat;text-indent: -9999em;margin-bottom: 20px;}
+header .logo{padding:0;margin: 0;}
+#avatar{padding: 4px;background: #fff;display: inline-block;border-radius: 50%;box-shadow: 0 1px 2px rgba(0,0,0,0.15)}
+#avatar img{border-radius: 50%;}
+
+/*填写邮箱页面*/
+#landingForm_wrapper{background: #fff;padding: 10px;box-shadow: 0 1px 2px rgba(0,0,0,0.15);/*border-radius: 5px;*/}
+#landingForm_wrapper legend{padding: 4px 0 10px 0; font-size: 16px;line-height: 1.78;}
+#landingForm_wrapper .input-prepend{margin: 20px 0 30px 0;position: relative;}
+#landingForm_wrapper .why{font-size: 12px;color: #999}
+input.Validform_error{background: #ffe7e7}
+#landingForm_wrapper .Validform_checktip{font-size: 12px;color: #666;vertical-align: -3px;position: absolute;width: auto;top: 5px;}
+#promise{padding: 10px;color: #aaa;font-size: 12px;text-indent: -9999em; /*text-align:left;*/}
+
+/*邮箱发送结果*/
+#send_email_feedback_wrap{background: url(/static/public/img/fancy_box_border.png) 8px 0 repeat;padding:5px;width: 590px;margin: 0 auto;box-shadow: 0 0 2px rgba(0,0,0,0.3);border-radius: 5px}
+#send_email_feedback{background: #fff;padding: 30px 0 20px 0;}
+#send_email_feedback h2{margin-top: 0;}
+
+.w500{width: 480px;padding:10px;margin: 0 auto;color: #999; font-size: 12px;border-top: 1px solid #eee;}
+#send_email_feedback p.check{padding: 20px 0}
+#send_email_feedback ul{display: block;width: 500px;margin: 0 auto;color: #999;text-align: left;}
+.w500 a{color: #555}
+
+/*反馈页面*/
+#feedback_wrap{width: 580px;padding: 10px;}
+#feedback_wrap .controls{margin: 0 0 10px 0;}
+
+
+footer{padding-top:20px;}
+footer a{color: #999}
+footer a:hover, footer a:focus{color: #666;}
+footer a:after{display: inline-block;content: "·";margin: 0 5px;font-size: 30px;vertical-align: -5px;}
+footer a:last-child:after{display:none}
+
+
+
+
+/*==========以下部分是Validform必须的===========*/
+.Validform_checktip{
+    margin-left:8px;
+    line-height:20px;
+    height:20px;
+    color:#666;
+    font-size:12px;
+}
+.Validform_right{
+    color: #333;
+    padding-left:20px;
+    background:url(/static/public/img/right.png) no-repeat left center;
+}
+.Validform_wrong{
+    color: #333;
+    padding-left:20px;
+    white-space:nowrap;
+    background:url(/static/public/img/error.png) no-repeat left center;
+}
+.Validform_loading{
+    padding-left:20px;
+    background:url(/static/public/img/onLoad.gif) no-repeat left center;
+}
+.Validform_error{
+    background-color:#ffe7e7;
+}
+#Validform_msg{color:#7d8289; font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif; width:280px; -webkit-box-shadow:2px 2px 3px #aaa; -moz-box-shadow:2px 2px 3px #aaa; background:#fff; position:absolute; top:0px; right:50px; z-index:99999; display:none;filter: progid:DXImageTransform.Microsoft.Shadow(Strength=3, Direction=135, Color='#999999');}
+#Validform_msg .iframe{position:absolute; left:0px; top:-1px; z-index:-1;}
+#Validform_msg .Validform_title{line-height:25px; height:25px; text-align:left; font-weight:bold; padding:0 8px; color:#fff; position:relative; background-color:#111;}
+#Validform_msg a.Validform_close:link,#Validform_msg a.Validform_close:visited{line-height:22px; position:absolute; right:8px; top:0px; color:#fff; text-decoration:none;}
+#Validform_msg a.Validform_close:hover{color:#cc0;}
+#Validform_msg .Validform_info{padding:8px;border:1px solid #000; border-top:none; text-align:left;}
+
+.passwordStrength{
+    position: absolute;
+    top:4px;
+    right: -10px;
+}
+.passwordStrength b{
+    font-weight:normal;
+}
+.passwordStrength b,.passwordStrength span{
+    display:inline-block; 
+    vertical-align:middle;
+    line-height:16px;
+    line-height:18px\9;
+    height:16px;
+}
+.passwordStrength span{
+    width:45px; 
+    text-align:center; 
+    background-color:#d0d0d0; 
+    border-right:1px solid #fff;
+}
+.passwordStrength .last{
+    border-right:none;
+}
+.passwordStrength .bgStrength{
+    color:#fff;
+    background-color:#71b83d;
+}

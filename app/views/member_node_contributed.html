@@ -1,0 +1,133 @@
+$def with (u, profile, nodeList, authors, user)
+$var page_title: $:u.nickname
+
+$var jsfiles: /static/public/js/jquery.masonry.min.js /static/public/js/jquery.infinitescroll.min.js
+<div id="member_profile_page">
+    <div id="profile_header" style="background-image:url(/static/public/img/5.jpg)">
+        <div id="profile_header_inner">
+            $if u.avatarPath != 'http://img3.douban.com/icon/user_normal.jpg':
+                $ src = u.avatarPath.replace('/u','/ul')
+            $else:
+                $ src = '/static/public/img/userpic.jpg'
+            <div id="profile_header_avatar" style="background-image:url($src)">
+            </div>
+            <h1>$u.nickname</h1>
+            <div class="desc">
+
+                    $if profile.has_key('bio') and profile.bio != None and profile.bio.strip(' ') != '':
+                        $# full = replace_breaks(replace_links(profile.bio.strip(' ')))
+                        <a href="javascript:void(0)" title="查看简介" id="more_desc"><i class="icon icon-white icon-chevron-down"></i></a>
+                    $#else:
+                        $# full = ""
+
+                <div id="desc_full">
+                    $if profile.has_key('bio') and profile.bio != None and profile.bio.strip(' ') != '':
+                        $:replace_breaks(replace_links(html_quote(profile.bio)))
+                </div>
+            </div>
+            <div class="city">
+                <i class="icon icon-white icon-map-marker"></i> 
+                $if profile.has_key('city') and profile.city != None:
+                    $profile.city
+                $else:
+                    <span class="f12">地点未知</span>
+            </div>
+            <div class="sns_link share_sns_icon"><a href="http://www.douban.com/people/$u.username" title="豆瓣主页"><i></i></a></div>
+        </div>
+        $if user.is_logged:
+            $if user.username == u.username:
+                <div id="change_background_img">
+                    <a href="javascript:void(0)" id="change_background_img_btn" class="btn btn-info">更改背景图片</a>
+                    <div id="change_background_img_form">
+                        <div class="node_empty_border">
+                            <div class="node_empty">
+                                <p>Sorry....赶着上线，此功能还未完成，再等等吧。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div id="change_user_intro">
+                    更改个人简介
+                </div> -->
+    </div>
+    
+    <div class="profile_page_content clearfix">
+        <div id="rec_nav">
+            <div class="navbar navbar-inverse">
+                <div class="navbar-inner">
+                    <ul class="nav">
+                        <li><a href="/member/$u.username#rec_nav">片段</a></li>
+                        <li class="active"><a href="/member/$u.username/node#rec_nav">话题</a></li>
+                    </ul>
+                </div>
+            </div>
+            <ul class="nav nav-tabs">
+                <li>
+                    <a href="/member/$u.username/node#rec_nav">创建的</a>
+                </li>
+                <li class="active">
+                    <a href="/member/$u.username/node/contributed#rec_nav">参与的</a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="profile_items">
+        $if nodeList:
+            <ul>
+            $for i in xrange(len(nodeList)):
+                <li item-data="$nodeList[i].id" class="node_card_list_item">
+                    <a href="/node/$nodeList[i].id" title="$nodeList[i].nodeName" class="node_card clearfix">
+                        $if nodeList[i].nodeImg:
+                            $ url = "/static/upload/node_img" + nodeList[i].nodeImg
+                        $else:
+                            $ url = "/static/public/img/logo.png"
+                        <span class="node_card_image" style="background-image:url($url)"></span>
+                        <hgroup>
+                            <h2>$nodeList[i].nodeName</h2>
+                            <h3>$authors[i].nickname 创建</h3>
+                        </hgroup>
+                        <div class="node_card_meta">
+                            <div class="node_card_meta_post_count">$nodeList[i].postMount 个片段</div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        $else:
+            <div class="node_empty_border">
+                <div class="node_empty">
+                    <h1>这里还是空的</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-nav"><a href="/member/$u.username/node/contributed/page/2">查看更多</a></div>
+</div>
+
+<script>
+    jQuery(function(){
+        /*infinitescroll*/
+        var container = jQuery('.profile_items ul');
+
+        container.infinitescroll({
+            navSelector  : '#page-nav',
+            nextSelector : '#page-nav a',
+            itemSelector : 'li',
+            loadingText: '稍等，努力加载中...',
+            donetext: '',
+            bufferPx:500,
+            loadingImg: '/static/public/img/loading.gif'//,
+            // animate: true,
+            // extraScrollPx: -10
+
+        },
+        // trigger Masonry as a callback
+        function( newElements ) {
+            var newElems = jQuery( newElements ).css({ opacity: 0 });
+            newElems.imagesLoaded(function(){
+                newElems.animate({ opacity: 1 });
+                // container.masonry( 'appended', newElems, true ); 
+            });
+        });
+    })
+</script>

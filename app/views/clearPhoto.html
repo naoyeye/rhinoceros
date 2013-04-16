@@ -1,0 +1,36 @@
+$def with (img_list, node_img_part_name, post_img_part_name, head_img_part_name, nu)
+$var page_title : 创意工作者聚集地
+<style>
+ul, li{/*margin: 0;padding:0;list-style: none;*/font-size: 12px;}
+li{margin-bottom: 5px;}
+</style>
+
+<h1>无用的头像图片:</h1>
+<ol style="color:#fcc">
+$for i in nu:
+    <li>$i</li>
+</ol>
+
+<h1>node_img_part_name:</h1>
+<ol style="color:#5ce">
+$for i in node_img_part_name:
+    <li>$i</li>
+</ol>
+
+<h1>post_img_part_name:</h1>
+<ol style="color:#c3d">
+$for i in post_img_part_name:
+    <li>$i</li>
+</ol>
+
+<h1>head_img_part_name:</h1>
+<ol style="color:#3dc">
+$for i in head_img_part_name:
+    <li>$i</li>
+</ol>
+
+<h1>img_list:</h1>
+<ol style="color:#3d4">
+$for img in img_list:
+    <li>$img</li>
+</ol>

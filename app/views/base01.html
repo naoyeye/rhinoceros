@@ -1,0 +1,35 @@
+$def with (content, siteName)
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>$siteName</title>
+<meta name="google-site-verification" content="S2cP-R29SZPJEXO6iTzQG2V_X2bbR7bJcpwNzdwx78s" />
+<link rel="icon" type="image/png" href="/static/public/img/favicon.png">
+<link rel="stylesheet" type="text/css" href="/static/public/css/bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="/static/public/css/base.css"/>
+$if content.has_key('cssfiles'): 
+    $for f in content.cssfiles.split():
+        <link rel="stylesheet" href="$f" type="text/css" media="screen" charset="utf-8"/>
+<script src="/static/public/js/jquery.min.1.7.2.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37330113-1']);
+  _gaq.push(['_setDomainName', 'biubiubiubiu.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body>
+    $:content
+$if content.has_key('jsfiles'): 
+    $for f in content.jsfiles.split():
+        <script src="$f" type="text/javascript"></script>
+</body>
+</html>

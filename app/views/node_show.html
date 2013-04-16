@@ -1,0 +1,298 @@
+$def with(timestrf, rights, node, postList, node_author_info, user, authors, sort="")
+$var page_title : $:node.nodeName
+$var jsfiles: /static/public/js/node.js /static/public/js/jquery.masonry.min.js /static/public/js/jquery.infinitescroll.min.js
+
+$if user.is_logged:
+    $if rights > 1:
+        <div id="adminBar">
+            <a id="switchAdminBar" href="javascript:void(0)"><i class="icon icon-user icon-white"></i></a>
+            <a class="admin_btn admin_rec_node" href="javascript:void(0)">放到首页</a>
+            <a class="admin_btn admin_del_node" href="javascript:void(0)">删除话题</a>
+        </div>
+<div class="node_page">
+    $if user.is_logged:
+        $if user.id == node.node_author: 
+            <a href="javascript:void(0)" class="s-w" style="display:none;">&gt;</a>
+            <a class="edit_switch" style="width:91px;" href="javascript:void(0)"><i class="icon-pencil icon-white"></i>编辑话题设置</a>
+            <a style="margin-left:163px;" class="add_biu" href="/node/$node.id/post"><i class="icon-plus icon-white"></i>添加片段</a>
+        $else:
+            $if node.nodeOpen == 1 and rights > 0:
+                $# note: 暂时加上权限判断了。让普通用户无法添加片段
+                $# note: 以前是这样： $if node.nodeOpen == 1:
+                $# note: 暂时去掉 if user.id == node.node_author:
+                $# note:    <a style="margin-left:163px;" class="add_biu" href="/node/$node.id/post">
+                $# note: $else:
+                <a class="add_biu" href="/node/$node.id/post">
+                    <i class="icon-plus icon-white"></i>添加片段
+                </a>
+        
+
+    <section class="node_page_content">
+        <div class="node_header node_header_saved">
+            <div class="node_bg_wrap">
+            $if node.nodeImg:
+                <span class="node_bg" style="background-image:url(/static/upload/node_img$node.nodeImg)"></span>
+            $else:
+                <span class="node_bg" style="background-image:url(/static/public/img/logo.png);background-color:#333332"></span>
+             </div>
+            <h1 class="node_title" itemprop="name">$node.nodeName</h1>
+            <p class="f14 node_desc" itemprop="description">$node.nodeDesc</p>
+        </div>
+
+        <div class="node_toolbar">
+            <ul class="node_sort_control">
+                <li>
+                    <a class="node_sort_interesting
+                    $if sort == 'interesting':
+                        active
+                    " href="/node/$node.id">推荐</a>
+                </li>
+                <li>
+                    <a class="node_sort_recent
+                     $if sort == 'recent':
+                        active
+                    " href="/node/$node.id/recent">最近</a>
+                </li>
+            </ul>
+            <span class="node_post_count">$node.postMount 片段</span>
+            <span class="node_rss">
+                <a title="RSS订阅" class="icon icon-rss" href="/node/$node.id/feed">订阅</a>
+            </span>
+            <span class="node_author">话题由 <a title="$node_author_info.nickname" href="/member/$node_author_info.username">$node_author_info.nickname</a> $timestrf(node.creation_ts) 创建
+            </span>
+        </div>
+
+    $if postList:
+        <div class="post_list_wrap clearfix">
+            <ul>
+            $for i in xrange(len(postList)):
+                $if i == 0 :
+                    <li class="post_list post_list_first item_temp_$postList[0].postTemp
+                    $if not postList[0].postImage : 
+                        item_no_img
+                    ">
+                        <div class="post_link_wrap">
+                            <a href="/post/$postList[0].id">
+                                $if postList[0].postImage:
+                                    <span class="item_image_wrap">
+                                        $if postList[0].postTemp == 1 or postList[0].postTemp == 2:
+                                            $ img = postList[0].postImage + "_750.jpg"
+                                        $elif postList[0].postTemp == 3 or postList[0].postTemp == 4 or postList[0].postTemp == 5:
+                                            $ img = postList[0].postImage + "_751.jpg"
+                                        <span class="item_image" style="background-image:url($img)"></span>
+                                    </span>
+                                <div class="post_cont">
+                                    $if postList[0].postTemp == 4:
+                                        <div class="vertical-align"><h1>$postList[0].postCaption</h1></div>
+                                    $else:
+                                        <h1>$postList[0].postTitle</h1>
+                                    $if postList[0].postTemp != 3 and postList[0].postTemp != 4 and postList[0].postTemp != 5:
+                                        <p class="snippet">
+                                        $filter_tags(postList[0].postArticle[0:850])
+                                        </p>
+                                    <div class="gradient"></div>
+                                </div>
+                            </a>
+                        
+                            <div class="meta">
+                                <span class="magnitude">$postList[0].magnitude喜欢</span>
+                                <span class="comment_num">$postList[0].comment_num评论</span>
+                                <span class="post_author"><a title="$authors[0].nickname" href="/member/$authors[0].username">$authors[0].nickname</a></span>
+
+                            </div>
+                        </div>
+                    </li>
+                $else:
+                    <li class="post_list item_temp_$postList[i].postTemp
+                    $if not postList[i].postImage : 
+                        item_no_img
+                    ">
+                        <div class="post_link_wrap">
+                            <a href="/post/$postList[i].id">
+                                $if postList[i].postImage:
+                                    <span class="item_image_wrap">
+                                        $if postList[i].postTemp == 1 or postList[i].postTemp == 2:
+                                            $ img = postList[i].postImage + "_365.jpg"
+                                        $elif postList[i].postTemp == 3 or postList[i].postTemp == 4 or postList[i].postTemp == 5:
+                                            $ img = postList[i].postImage + "_366.jpg"
+                                        <span class="item_image" style="background-image:url($img)"></span>
+                                    </span>
+                                <div class="post_cont">
+                                    $if postList[i].postTemp == 4:
+                                        <div class="vertical-align"><h1>$postList[i].postCaption</h1></div>
+                                    $else:
+                                        <h1>$postList[i].postTitle</h1>
+                                    $if postList[i].postTemp != 3 and postList[i].postTemp != 4 and postList[i].postTemp != 5:
+                                        <p class="snippet">
+                                        $filter_tags(postList[i].postArticle[0:850])
+                                        </p>
+                                    <div class="gradient"></div>
+                                </div>
+                            </a>
+                        
+                            <div class="meta">
+                                <span class="magnitude">$postList[i].magnitude喜欢</span>
+                                <span class="comment_num">$postList[i].comment_num评论</span>
+                                <span class="post_author"><a title="$authors[i].nickname" href="/member/$authors[i].username">$authors[i].nickname</a></span>
+                            </div>
+                        </div>
+                    </li>
+            </ul>
+            $if user.is_logged:
+                $if user.id == node.node_author or node.nodeOpen == 1:
+                    <div class="post_list post_plus">
+                        <div class="node_empty_border">
+                            <div class="post_link_wrap node_empty">
+                                <a href="/node/$node.id/post">
+                                    <h2>点击添加新片段</h2>
+                                    <p>Biu每个话题都是开放的<br/>我们鼓励大家添加原创内容</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+        </div>
+        $if sort == 'interesting':
+            <div id="page-nav"><a href="/node/$node.id/page/2">查看更多</a></div>
+        $else:
+            <div id="page-nav"><a href="/node/$node.id/recent/page/2">查看更多</a></div>
+
+    $else:
+        <div class="node_empty_border">
+            <div class="node_empty">
+                <h1>这个话题还是空的</h1>
+                $if user.is_logged:
+                    <p>点击左上角的“添加片段”按钮，可以在这个话题中添加内容</p>
+                $else:
+                    <p>登录后可以在里面添加内容</p>
+            </div>
+        </div>
+
+    $if user.is_logged:
+        $if user.id == node.node_author:
+            <div class="node_header node_header_edit" style="display:none">
+                <form id="node_header_edit_form" class="form-horizontal" autocomplete="off" action="/node/$node.id/update">
+                    <div class="control-group">
+                        <div class="node_bg_wrap">
+                            $if node.nodeImg:
+                                <a title="更换图片" class="node_bg" href="javascript:void(0)" style="background-image:url(/static/upload/node_img$node.nodeImg); border-color:#DEDEDC" onclick="getElementById('upload_file_hide').click()">
+                                <i style="display:none"></i>
+                                <a style="display:block" title="删除" id="delNodeBg" href="javascript:void(0)"><i class="icon-remove icon-white"></i></a>
+                            $else:
+                                <a title="上传一张可以代表此话题的图片" class="node_bg" href="javascript:void(0)" onclick="getElementById('upload_file_hide').click()">
+                                <i></i>
+                                <a style="display:none" title="删除" id="delNodeBg" href="javascript:void(0)"><i class="icon-remove icon-white"></i></a>
+                           
+                            <input type="file" name="uploadImg" id="upload_file_hide" />
+                            <input type="hidden" id="node_Img" name="node_Img" value="$node.nodeImg" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <input type="text" id="node_Name" class="input-xxlarge" name="node_Name" datatype="node_Name" placeholder="话题名称 不超过20字 必填" errormsg="啊哈？超过20字了？" nullmsg="必填" value="$node.nodeName" />
+                        <span class="Validform_checktip"></span>
+                    </div>
+                    <div class="control-group">
+                        <textarea rows="3" id="node_Desc" name="node_Desc" datatype="node_Desc" class="input-xxlarge" placeholder="话题描述 不超过120字 选填" errormsg="哎呀，超过120字了？" ignore="ignore">$node.nodeDesc</textarea>
+                        <span class="Validform_checktip"></span>
+                    </div>
+            $# note: 暂时屏蔽
+            $#                <div class="control-group">
+
+            $#                    <label id="nodeOpenLabel" class="checkbox">
+            $#                        $#if node.nodeOpen == 1:
+            $#                            <input id="node_Open" name="node_Open" type="checkbox" checked="checked" />
+            $#                        $#else:
+            $#                            <input id="node_Open" name="node_Open" type="checkbox"/>
+            $#                        开放话题，别人便可以在这个话题下发表内容
+            $#                    </label>
+            $#                </div>
+                    <div class="form-control">
+                        <button type="submit" id="node_new_save_btn" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+    </section>
+</div>
+$if user.is_logged:
+    $if rights > 1:
+        <div id="admin_rec_mess" style="position:fixed;top:0;left:50%;margin-left:-100px;text-align:center;padding:10px 0;color:#fff;font-size:14px;width:200px;background:green;display:none">推荐成功</div>
+<script>
+jQuery(function(){
+    //移除右上角创建话题的按钮
+    jQuery('#creatNewNode').remove();
+
+    $if postList:
+        /*fix height*/
+        jQuery('.node_page').css({
+            'height': 'auto'
+        })
+        jQuery('body').css({
+            'background' : '#EDEDEB'
+        })
+
+    $if user.is_logged:
+        $if rights > 1:
+            /*admin*/
+            jQuery('#adminBar .admin_rec_node').click(function(){
+                var nid = $node.id;
+                jQuery.ajax({
+                    url:'/admin/rec_node',
+                    type:'POST',
+                    data:{nid:nid},
+                    dataType : "text",
+                    success:function(mes){
+                        if (mes == 's'){
+                            jQuery('#admin_rec_mess').slideDown()
+                            setTimeout(function(){
+                                jQuery('#admin_rec_mess').slideUp()
+                            },2000)
+                        }
+                    }
+                });
+            })
+
+    /*infinitescroll*/
+    var container = jQuery('.post_list_wrap ul');
+    // container.imagesLoaded(function(){
+    //     container.masonry({
+    //         itemSelector : 'li',
+    //         columnWidth : 385
+    //     });
+    // });
+    container.infinitescroll({
+        navSelector  : '#page-nav',
+        nextSelector : '#page-nav a',
+        itemSelector : 'li',
+        loadingText: '稍等，努力加载中...',
+        donetext: '',
+        bufferPx:500,
+        loadingImg: '/static/public/img/loading.gif'//,
+        // animate: true,
+        // extraScrollPx: -10
+
+    },
+    // trigger Masonry as a callback
+    function( newElements ) {
+        var newElems = jQuery( newElements ).css({ opacity: 0 });
+        newElems.imagesLoaded(function(){
+            newElems.animate({ opacity: 1 });
+            // container.masonry( 'appended', newElems, true ); 
+        });
+    });
+
+    // // kill scroll binding
+    // jQuery(window).unbind('.infscr');
+    
+    // // hook up the manual click guy.
+    // jQuery('#page-nav a').click(function(){
+    //     container.trigger('retrieve.infscr');
+    //     return false;
+    // });
+    // // remove the paginator when we're done.
+    // jQuery(document).ajaxError(function(e,xhr,opt){
+    //     if (xhr.status == 404) {
+    //         jQuery('#page-nav').remove();
+    //     }
+    // });
+})
+</script>

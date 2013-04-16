@@ -1,0 +1,40 @@
+$def with(nodeList, authors)
+$var page_title : 全部话题
+
+
+<div class="node_page_content clearfix" style="padding-top:0;background:#EDEDEB">
+
+    <div id="rec_nav" style="margin-bottom:40px;">
+        <div class="navbar navbar-inverse">
+            <div class="navbar-inner">
+                <ul class="nav">
+                    <li><a href="/">推荐片段</a></li>
+                    <li><a href="/node">推荐话题</a></li>
+                    <li class="active"><a href="/node/all">最新话题 - 仅管理员</a></li>
+                    <li><a href="/post/latest">最新片段 - 仅管理员</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <h1 style="text-align:center">最新的50个话题</h1>
+
+    <ul>
+    $for i in xrange(len(nodeList)):
+        <li item-data="$nodeList[i].id" class="node_card_list_item">
+            <a href="/node/$nodeList[i].id" title="$nodeList[i].nodeName" class="node_card clearfix">
+                $if nodeList[i].nodeImg:
+                    $ url = "/static/upload/node_img" + nodeList[i].nodeImg
+                $else:
+                    $ url = "/static/public/img/logo.png"
+                <span class="node_card_image" style="background-image:url($url)"></span>
+                <hgroup>
+                    <h2>$nodeList[i].nodeName</h2>
+                    <h3>$authors[i].nickname 创建</h3>
+                </hgroup>
+                <div class="node_card_meta">
+                    <div class="node_card_meta_post_count">$nodeList[i].postMount 个片段</div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>

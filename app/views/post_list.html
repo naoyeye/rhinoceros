@@ -1,0 +1,41 @@
+$def with(postList, authors)
+$if postList:
+    <div class="post_list_wrap clearfix">
+        <ul>
+        $for i in xrange(len(postList)):
+            <li class="post_list item_temp_$postList[i].postTemp
+            $if not postList[i].postImage : 
+                item_no_img
+            ">
+                <div class="post_link_wrap">
+                    <a href="/post/$postList[i].id">
+                        $if postList[i].postImage:
+                            <span class="item_image_wrap">
+                                $if postList[i].postTemp == 1 or postList[i].postTemp == 2:
+                                    $ img = postList[i].postImage + "_365.jpg"
+                                $elif postList[i].postTemp == 3 or postList[i].postTemp == 4 or postList[i].postTemp == 5:
+                                    $ img = postList[i].postImage + "_366.jpg"
+                                <span class="item_image" style="background-image:url($img)"></span>
+                            </span>
+                        <div class="post_cont">
+                            $if postList[i].postTemp == 4:
+                                <div class="vertical-align"><h1>$postList[i].postCaption</h1></div>
+                            $else:
+                                <h1>$postList[i].postTitle</h1>
+                            $if postList[i].postTemp != 3 and postList[i].postTemp != 4 and postList[i].postTemp != 5:
+                                <p class="snippet">
+                                $filter_tags(postList[i].postArticle[0:850])
+                                </p>
+                            <div class="gradient"></div>
+                        </div>
+                    </a>
+                
+                    <div class="meta">
+                        <span class="magnitude">$postList[i].magnitude喜欢</span>
+                        <span class="comment_num">$postList[i].comment_num评论</span>
+                        <span class="post_author"><a title="$authors[i].nickname" href="/member/$authors[i].username">$authors[i].nickname</a></span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>

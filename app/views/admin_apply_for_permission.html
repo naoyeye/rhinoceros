@@ -1,0 +1,143 @@
+$def with(apply_list, pager, admin_list, user_list, result)
+$var page_title: 权限申请管理
+$var cur : apply_for_permission
+<style>
+.nav-tabs{margin-bottom: 0}
+</style>
+<section class="admin_post_page_content">
+<h2>权限申请管理</h2>
+<p>”通过“和”否决“操作会自动给用户发送邮件哦！如果发现某个用户填写的邮箱明显是假的，就点"移除"，相当于对此用户不做处理</p>
+
+<ul class="nav nav-tabs">
+    $if result == '-2' or result == '':
+        <li class="active">
+    $else:
+        <li>
+    <a href="/admin/apply_for_permission">
+        <span class="label label-important">未处理</span>
+    </a>
+    </li>
+    $if result == '1':
+        <li class="active">
+    $else:
+        <li>
+    <a href="/admin/apply_for_permission?result=1">
+        <span class="label label-success">已通过</span>
+    </a>
+    </li>
+    $if result == '0':
+        <li class="active">
+    $else:
+        <li>
+    <a href="/admin/apply_for_permission?result=0">
+        <span class="label label-warning">已否决</span>
+    </a>
+    </li>
+    $if result == '-1':
+        <li class="active">
+    $else:
+        <li>
+    <a href="/admin/apply_for_permission?result=-1">
+        <span class="label label-default">已移除</span>
+    </a>
+    </li>
+</ul>
+
+$if apply_list:
+    <table class="table table-striped table-hover" style="margin-top:10px;">
+        <thead>
+            <tr>
+                <th>编号</th>
+                <th>用户昵称</th>
+                <th>邮箱地址</th>
+                <th style="width:200px;">申请理由</th>
+                <th>申请时间</th>
+                <th>处理结果</th>
+                <th style="width:60px;">处理者</th>
+                <th>处理时间</th>
+                <th style="width:220px;">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        $for i in xrange(len(apply_list)):
+            <tr>
+                <td class="apply_id">$apply_list[i].id</td>
+                <td style="display:none" class="douban_id">$apply_list[i].douban_id</td>
+                <td><a target="_blank" href="//www.douban.com/people/$user_list[i].username">$user_list[i].nickname</a></td>
+                <td class="apply_email">$apply_list[i].email</td>
+                <td>$apply_list[i].reason</td>
+                <td>$apply_list[i].creation_ts</td>
+                <td>
+                    $if apply_list[i].result == -2:
+                        <span class="label label-important">未处理</span>
+                    $if apply_list[i].result == -1:
+                        <span class="label label-default">已移除</span>
+                    $elif apply_list[i].result == 0:
+                        <span class="label label-warning">已否决</span>
+                    $elif apply_list[i].result == 1:
+                        <span class="label label-success">已通过</span>
+                </td>
+                <td>
+                    $if admin_list[i].nickname:
+                        $admin_list[i].nickname
+                </td>
+                <td>$apply_list[i].operating_ts</td>
+                <td>
+                $if apply_list[i].result != 1:
+                    <a href="javascript:void(0)" result="1" class="apply_operate btn btn-mini btn-success pass_apply"><i class="icon icon-ok icon-white"></i> 通过</a> 
+                $if apply_list[i].result != 0:
+                    <a href="javascript:void(0)" result="0" class="apply_operate btn btn-mini btn-warning nopass_apply"><i class="icon icon-ban-circle icon-white"></i> 否决</a>
+                $if apply_list[i].result != -1:
+                    <a href="javascript:void(0)" result="-1" class="apply_operate btn btn-mini remove_apply"><i class="icon icon-remove icon-white"></i> 移除</a>
+                </td>
+            <tr>
+        <tbody>
+    </table>
+    $def show_paging():
+        $if pager.leftmost_a or pager.leftmost_a == 0:
+            <a href="/admin/apply_for_permission?result=$result&start=$pager.leftmost_a">&laquo; 第1页</a>
+        $if pager.left_a or pager.left_a == 0:
+            <a href="/admin/apply_for_permission?result=$result&start=$pager.left_a">&#8249; 上一页</a>
+        第 $(pager.start + 1) —  
+        $if pager.right_a: 
+            $pager.right_a 条
+        $else:
+            $pager.max_results  条
+        共 $pager.max_results 条
+        $if pager.right_a:
+            <a href="/admin/apply_for_permission?result=$result&start=$pager.right_a">下一页 &#8250;</a>
+        $if pager.rightmost_a:
+            <a href="/admin/apply_for_permission?result=$result&start=$pager.rightmost_a">末页 &raquo;</a>
+
+    $if pager and pager.max_results:
+        <div class="paging">
+            <span>$:show_paging()</span>
+        </div>
+$else:
+    <div class="node_empty_border">
+        <div class="node_empty">
+            <h1>这里还是空的</h1>
+        </div>
+    </div>
+</section>
+
+<script>
+jQuery('.apply_operate').click(function(){
+    var t = jQuery(this).parents('tr').eq(0),
+        apply_id = t.find('.apply_id').text(),
+        douban_id = t.find('.douban_id').text(),
+        apply_ts = t.find('.apply_ts').text(),
+        apply_email = t.find('.apply_email').text(),
+        apply_result = jQuery(this).attr('result');
+
+        jQuery.ajax({
+            url:'/admin/apply_operate',
+            type:'POST',
+            data:{douban_id: douban_id, apply_id : apply_id, apply_email:apply_email, apply_result:apply_result},
+            dataType : "text",
+            success:function(mes){
+                t.slideUp()
+            }
+        });
+})
+</script>

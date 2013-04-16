@@ -1,0 +1,72 @@
+$def with(results, user_list, pager, c)
+$var page_title: 邮箱验证记录
+$var cur : confirm_email
+
+<style>
+.nav-tabs{margin-bottom: 0}
+</style>
+<section class="admin_post_page_content">
+<h2>用户邮箱验证记录</h2>
+
+
+<ul class="nav nav-tabs">
+    $if c == '1' or c == '':
+        <li class="active">
+    $else:
+        <li>
+    <a href="/admin/email_confirm">
+        <span class="label label-success">已验证的</span>
+    </a>
+    </li>
+    $if c == '0':
+        <li class="active">
+    $else:
+        <li>
+    <a href="/admin/email_confirm?c=0">
+        <span class="label label-important">未验证的</span>
+    </a>
+    </li>
+
+</ul>
+
+<ul class="clearfix">
+$if user_list:
+    $for user in user_list:
+        <li style="margin:10px 0">
+            $if user.username:
+                <a href="/member/$user.username"><img src="$user.avatarPath" alt="$user.nickname"></a>
+                <a href="/member/$user.username">$user.nickname</a> : 
+            <span class="f14">$user.email</span>
+
+        </li>
+    </ul>
+$else:
+    $for r in results:
+        <li style="margin:10px 0">
+
+            <a href="http://www.douban.com/people/$r.douban_id">$r.douban_id</a> : 
+            <span class="f14">$r.email</span>
+            <span class="f12" style="color:#999"> - $timestrf(r.creation_ts)</span>
+        </li>
+    </ul>
+
+$def show_paging():
+    $if pager.leftmost_a or pager.leftmost_a == 0:
+        <a href="/admin/email_confirm?c=$c&start=$pager.leftmost_a">&laquo; 第1页</a>
+    $if pager.left_a or pager.left_a == 0:
+        <a href="/admin/email_confirm?c=$c&start=$pager.left_a">&#8249; 上一页</a>
+    第 $(pager.start + 1) —  
+    $if pager.right_a: 
+        $pager.right_a 条
+    $else:
+        $pager.max_results  条
+    共 $pager.max_results 条
+    $if pager.right_a:
+        <a href="/admin/email_confirm?c=$c&start=$pager.right_a">下一页 &#8250;</a>
+    $if pager.rightmost_a:
+        <a href="/admin/email_confirm?c=$c&start=$pager.rightmost_a">末页 &raquo;</a>
+
+$if pager and pager.max_results:
+    <div class="paging">
+        <span>$:show_paging()</span>
+    </div>

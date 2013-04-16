@@ -1,0 +1,188 @@
+$def with(postList,post_authors,post_nodes,  nodeList, node_authors)
+$var page_title: 管理首页
+$var cur : admin_home
+
+<section class="admin_post_page_content">
+<h2>首页推荐(话题/片段)排序管理</h2>
+<p>拖动可以排序；点击右上角的删除，可以将话题/片段从首页推荐中移除</p>
+$if postList:
+    <div class="post_list_wrap clearfix">
+        <ul>
+        $for i in xrange(len(postList)):
+            <li item-data="$postList[i].id" class="post_list item_temp_$postList[i].postTemp
+            $if not postList[i].postImage : 
+                item_no_img
+            ">
+                <div class="post_link_wrap">
+                    <a href="/post/$postList[i].id">
+                        $if postList[i].postImage:
+                            <span class="item_image_wrap">
+                                $if postList[i].postTemp == 1 or postList[i].postTemp == 2:
+                                    $ img = postList[i].postImage + "_365.jpg"
+                                $elif postList[i].postTemp == 3 or postList[i].postTemp == 4 or postList[i].postTemp == 5:
+                                    $ img = postList[i].postImage + "_366.jpg"
+                                <span class="item_image" style="background-image:url($img)"></span>
+                            </span>
+                        <div class="post_cont">
+                            $if postList[i].postTemp == 4:
+                                <div class="vertical-align"><h1>$postList[i].postCaption</h1></div>
+                            $else:
+                                <h1>$postList[i].postTitle</h1>
+                            $if postList[i].postTemp != 3 and postList[i].postTemp != 4 and postList[i].postTemp != 5:
+                                <p class="snippet">
+                                $filter_tags(postList[i].postArticle[0:850])
+                                </p>
+                            <div class="gradient"></div>
+                        </div>
+                    </a>
+                
+                    <div class="meta">
+                        <span class="post_author"><a target="_blank" title="$post_authors[i].nickname" href="/member/$post_authors[i].username">$post_authors[i].nickname</a> 发布在 <a class="post_belong_node" title="$post_nodes[i].nodeName" href="/node/$post_nodes[i].id">$post_nodes[i].nodeName</a></span>
+                    </div>
+
+                    <a href="javascript:void(0)" title="从首页移除" class="del_rec"><i class="icon icon-remove icon-white"></i></a>
+                </div>
+            </li>
+        </ul>
+        <div id="control_bar">
+            <a href="javascript:void(0)" class="btn btn-success save_sort">保存排序</a> &nbsp;&nbsp;
+            <a href="javascript:void(0)" class="btn btn-danger cancel_sort">取消</a>
+        </div>
+    </div>
+$else:
+    <div class="node_empty_border">
+        <div class="node_empty">
+            <h1>这里还是空的</h1>
+        </div>
+    </div>
+</section>
+
+<!--nodes-->
+<section class="admin_node_page_content node_page_content clearfix" style="background:#EDEDEB;margin-top:20px;">
+$if nodeList:
+    <ul>
+    $for i in xrange(len(nodeList)):
+        <li item-data="$nodeList[i].id" class="node_card_list_item">
+            <a href="/node/$nodeList[i].id" title="$nodeList[i].nodeName" class="node_card clearfix">
+                $if nodeList[i].nodeImg:
+                    $ url = "/static/upload/node_img" + nodeList[i].nodeImg
+                $else:
+                    $ url = "/static/public/img/logo.png"
+                <span class="node_card_image" style="background-image:url($url)"></span>
+                <hgroup>
+                    <h2>$nodeList[i].nodeName</h2>
+                    <h3>$node_authors[i].nickname 创建</h3>
+                </hgroup>
+                <ul class="node_card_meta">
+                    <li class="node_card_meta_post_count">$nodeList[i].postMount 个片段</li>
+                    <li>$nodeList[i].postMount 前更新</li>
+                </ul>
+            </a>
+            <a href="javascript:void(0)" class="del_rec"><i class="icon icon-remove icon-white"></i></a>
+        </li>
+    </ul>
+$else:
+    <div class="node_empty_border">
+        <div class="node_empty">
+            <h1>这里还是空的</h1>
+        </div>
+    </div>
+</section>
+
+<script src="/static/public/js/jquery.sortable.js"></script>
+<script>
+jQuery(function(){
+    //拖动排序
+    // post
+    jQuery('.admin_post_page_content ul').sortable().bind('sortupdate', function() {
+        // jQuery.each(jQuery('.admin_post_page_content li'), function(i, val){
+            // jQuery(val).attr('sort', i+1);
+            jQuery('#control_bar').slideDown(100)
+        // })
+    });
+    // node
+    jQuery('.admin_node_page_content ul:first-child').sortable().bind('sortupdate', function() {
+        // jQuery.each(jQuery('.admin_node_page_content li:first-child'), function(i, val){
+            // jQuery(val).attr('sort', i+1);
+            jQuery('#control_bar').slideDown(100)
+        // })
+    });
+
+    //取消排序
+    jQuery('.cancel_sort').click(function(){
+        jQuery('#control_bar').slideUp(100)
+    })
+
+    //保存排序
+    jQuery('.save_sort').click(function(){
+        var pids = [],
+            nids = [],
+            post_list = jQuery('.admin_post_page_content li'),
+            node_list = jQuery('.node_card_list_item');
+        post_list.each(function() { 
+            pids.push(jQuery(this).attr('item-data'));
+        });
+        node_list.each(function() { 
+            nids.push(jQuery(this).attr('item-data')); 
+        });
+        var _pids = pids.join(','),
+            _nids = nids.join(',');
+
+        jQuery.ajax({ 
+            type: "post", 
+            dataType : "text",
+            url: "/admin/rec_post/save_sort",
+            data: { pids: _pids, nids: _nids },
+            success: function(msg) { 
+                if (msg == "s"){
+                    var feedback_box = '<div class="feedback_box">成功</div>'
+                    jQuery('body').append(feedback_box);
+                    jQuery('.feedback_box').slideDown()
+                    setTimeout(function(){jQuery('.feedback_box').slideUp()},2000)
+                    jQuery('#control_bar').slideUp(100)
+                }
+            } 
+        }); 
+    })
+
+    //删除推荐的片段
+    jQuery('.admin_post_page_content .del_rec').click(function(){
+        var con = confirm('确定要删除吗？');
+        if (con == true){
+            var li = jQuery(this).parents("li").eq(0),
+                pid = li.attr('item-data');
+            jQuery.ajax({ 
+                type: "post", 
+                dataType : "text",
+                url: "/admin/rec_post/del_rec_post",
+                data: { pid: pid },
+                success: function(msg) { 
+                    li.fadeOut()
+                } 
+            }); 
+        }
+    })
+
+    //删除推荐的话题
+    jQuery('.admin_node_page_content .del_rec').click(function(){
+        var con = confirm('确定要删除吗？');
+        if (con == true){
+            var li = jQuery(this).parents("li").eq(0),
+                nid = li.attr('item-data');
+            jQuery.ajax({ 
+                type: "post", 
+                dataType : "text",
+                url: "/admin/rec_post/del_rec_node",
+                data: { nid: nid },
+                success: function(msg) { 
+                     li.fadeOut()
+                } 
+            }); 
+        }
+    })
+
+    jQuery('#main').css({
+        'height': 'auto'
+    })
+})
+</script>

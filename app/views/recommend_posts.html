@@ -1,0 +1,431 @@
+$def with(postList, authors, nodes, user, rights, apply_log)
+$if user:
+    $if user.is_logged:
+        $var page_title : 首页 - 推荐片段
+    $else:
+        $var page_title : 围绕话题 分享内容
+$else:
+    $var page_title : Biu
+
+$if user:
+    $if not user.is_logged:
+        $var jsfiles: /static/public/js/fancybox/jquery.mousewheel-3.0.6.pack.js /static/public/js/fancybox/jquery.fancybox.pack.js?v=2.1.3  /static/public/js/rec.js
+
+$var jsfiles: /static/public/js/Validform_v5.1.js /static/public/js/landing.js /static/public/js/passwordStrength-min.js /static/public/js/jquery.motionCaptcha.0.2.js
+
+$var cssfiles: /static/public/js/fancybox/jquery.fancybox.css?v=2.1.3 /static/public/css/landing.css
+
+<style>
+$if rights > 1:
+    #rec_nav .navbar-inner li:nth-last-child(2){margin-right: 50px}
+#creatNewNode{position:relative;right: 0}
+
+#not_logged_bg{
+    position: relative;
+    height: 600px;
+    /*background: #333332 url(/static/public/img/loading_b.gif) center 85% no-repeat;*/
+}
+#not_logged{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    /*background: url(/static/public/img/landing_bg/18.jpg) 50% 40% no-repeat;*/
+    background: #58AD69;
+    /*background-size: cover;*/
+}
+#l_over{
+    display: none;
+    background: radial-gradient(at 50% 50% , rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0.7)) repeat scroll 0 0 transparent;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    /*display: none;*/
+}
+#landing_home_welcome{
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    margin: 0;
+    width: 380px;
+    height: 380px;
+    margin-left: -190px;
+    /*background: #333332;*/
+    /*border-radius: 50%;*/
+    /*background: #58AD69;*/
+    /*background: rgba(255, 255, 255, 0.15);*/
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+}
+#landing_home_welcome p {
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+#rec_home{position: relative;box-shadow: 0 -5px 10px rgba(0,0,0,0.2)}
+
+#not_logged_fixed a.share_sns_icon{float: right;margin: 5px 20px 0 0;padding: 5px;background-color: #4c985d;}
+#not_logged_fixed a.share_sns_icon:hover{
+    background-color:#468b55;
+}
+
+$if user:
+    $if not user.is_logged:
+        #rec_home{padding-top: 10px;}
+
+</style>
+
+$if user:
+    $if not user.is_logged:
+        <script>
+            jQuery(function(){
+                //未登录时移除导航
+                $if not user.is_logged:
+                    jQuery('#navbarWrapper').remove();
+
+                //判断浏览器
+                if(jQuery.browser.msie){//若是ie浏览器
+                    jQuery('#detect').show()
+                }
+
+                // 判断操作系统
+                function detectOS(){
+                    var sUserAgent = navigator.userAgent;
+                    var isWin = (navigator.platform == "Win32") || (navigator.platform == "Windows");
+                    var isMac = (navigator.platform == "Mac68K") || (navigator.platform == "MacPPC") || (navigator.platform == "Macintosh" || navigator.platform == 'MacIntel');
+                    if(isMac) return "Mac";
+                    var isUnix = (navigator.platform == "X11") && !isWin && !isMac;
+                    if(isUnix) return "Unix";
+                    if(isWin)
+                    {
+                        jQuery('#detect').show()
+                    }
+                }
+
+                detectOS();
+
+                //点击Logo返回顶部
+                jQuery('#b_top').click(function(){
+                    jQuery(document).stop().scrollTo(0, 1200);
+                })
+
+                //滚动效果
+                var r_t = jQuery('#rec_home').offset().top,
+                    n = jQuery('#not_logged_fixed'),
+                    w = jQuery('#landing_home_welcome'),
+                    // w_t = w.offset().top;
+                    w_t = 60;
+
+                    // alert(w_t)
+                jQuery(window).scroll(function(){
+                    var scroll_top = jQuery(window).scrollTop(),
+                        distance =  r_t - scroll_top;
+
+                    // 延迟滚动
+                    w.css({
+                        'top' : w_t - scroll_top*0.2
+                    })
+
+                    // 大logo处理
+                    if(distance <= 290){ 
+                        w.stop().animate({opacity: 0}, 200);
+                    }else{
+                        w.stop().animate({opacity: 1}, 150);
+                    }
+
+                    // 头部固定层显藏处理
+                    if(distance <= 135){
+                        n.stop().show().animate({opacity : 1 },50);
+                    } else {
+                        n.stop().hide().animate({opacity : 0 },150);
+                    }
+
+                    // 头部css细节处理
+                    if(distance <= 33){
+                        n.css({
+                            'box-shadow' : '0 2px 2px rgba(0,0,0,0.45)'
+                        })
+                    } else{
+                        n.css({
+                            'box-shadow' : 'none'
+                        });
+                    }
+
+
+                })
+
+            })
+
+        </script>
+        <!-- <div id="test_log"></div> -->
+        <div id="not_logged_fixed">
+            <div class="node_page_content">
+                <div class="clearfix" style="position:relative">
+                    <a id="b_top" href="javascript:void(0)" title="Biu"><img src="/static/public/img/logo_s_w_2.png" /></a>
+                    <a class="share_sns_icon" href="/connect/douban"><i></i></a>
+                </div>
+            </div>
+        </div>
+        <div id="not_logged_bg">
+            <div id="not_logged">
+                <div id="l_over"></div>
+                <div class="node_page_content">
+                    <div id="landing_home_welcome">
+                        <div id="landingContent">
+                            <div id="landingLogo">
+                                <a href="/"><img src="/static/public/img/logo.png" alt="Biu" /><h1>Biu</h1></a>
+                                <span id="version">Beta 5.17</span>
+                            </div>
+                            <div id="landing_footer">
+                                <p>基于话题 - 分享内容</p>
+                            </div>
+                            <h2>阅读 - 观看 - 思考 - 交流</h2>
+                            <a class="sns_connect_btn connect_douban_btn" href="/connect/douban"><i></i><span>使用豆瓣登录</span></a>
+                        </div>
+                    </div>
+
+                    $ v = 0 
+                    $# 还没做完登陆注册这部分，先不上 2012.04.15 @ maan coffee
+                    $if v != 0:
+                        <div id="landingMain">
+                            <div id="formWrap">
+                                <form id="landingForm" autocomplete="off" action="" method="post">
+                                    <div id="regWrap">
+                                        <h4>注册</h4>
+                                        
+                                        <div class="controls">
+                                            <input name="regNickname" type="text" datatype="*1-10" nullmsg="请填写昵称" errormsg="1-10个字符" placeholder="给自己起一个名号" class="span3"/><span class="Validform_checktip">1-10个字符</span>
+                                        </div>
+
+                                        <div class="controls">
+                                            <input id="regUserName" name="regUserName" type="text" placeholder="用户名" ajaxurl="/account/check_username"  class="span3" datatype="regUserName" errormsg="以字母开头的2-16个字母、数字组合" nullmsg="用户名是必须的" /><span class="Validform_checktip"><i class="longTip">以字母开头的2-16个字母、数字组合，同时也会是你主页URL的一部分</i></span>
+                                        </div>
+
+                                        <div class="controls">
+                                            <input name="regEmail" type="text" datatype="e" nullmsg="请填写邮箱" ajaxurl="/account/check_email" errormsg="请检查邮箱格式" placeholder="邮箱" class="span3"/><span class="Validform_checktip"></span>
+                                        </div>
+
+                                        <div class="controls">
+                                            <input type="password" name="regUserPassword" placeholder="密码" datatype="*6-16" errormsg="密码范围在6~16位之间" plugin="passwordStrength" class="span3"/>
+                                            <span class="Validform_checktip">6-16个字符</span>
+                                            <div class="passwordStrength" style="display:none;"><b>密码强度：</b> <span>弱</span><span>中</span><span class="last">强</span></div>
+                                        </div>
+
+                                        <div class="controls">
+                                            <input type="password" name="regUserPassword2" placeholder="确认密码" datatype="*6-16" class="span3" datatype="*" recheck="regUserPassword" nullmsg="请再输入一次密码！" errormsg="您两次输入的账号密码不一致！" />
+                                            <span class="Validform_checktip"></span>
+                                        </div>
+
+                                        <div class="controls">
+                                            <div id="mc">
+                                                <canvas id="mc-canvas"></canvas>
+                                            </div>
+                                            <span class="Validform_checktip">请重新描绘右侧图形，大概意思即可</span>
+                                        </div>
+
+                                        <div class="form-actions"><input type="submit" id="regButton" class="btn btn-success btn-block btn-large" disabled="disabled" value="注册" /></div>
+
+                                    </div>
+                                </form>
+
+                                <form id="landingForm2" autocomplete="off" action="/account/landing_login" method="post">
+                                    <div id="loginWrap">
+                                        <div class="input-prepend">
+                                            <span class="add-on"><i class="icon-envelope"></i></span>
+                                            <input name="loginEmail" type="text" placeholder="邮箱" class="span3"/>
+                                            <span class="Validform_checktip"></span>
+                                        </div>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><i class="icon-lock"></i></span>
+                                            <input name="loginPassword" type="password" placeholder="密码" class="span3"/>
+                                            <a id="forgotButton" href="javascript:void(0)">忘记密码?</a>
+                                        </div>
+
+                                        <input type="submit" id="loginButton" class="btn btn-success" value="登录"><span id="msgdemo2"></span>
+                                    </div>
+                                </form>
+
+                                <form id="landingForm3" autocomplete="off" action="/account/landing_forgot" method="post">
+                                    <div id="forgotWrap">
+                                        <div class="input-prepend help-inline">
+                                            <input name="forgotEmail" type="text" placeholder="输入你的注册邮箱" datatype="e" nullmsg="请填写邮箱" errormsg="请检查邮箱格式" class="span3"/>
+                                            <span class="Validform_checktip"></span>
+                                        </div>
+                                        <div class="help-inline" style="vertical-align: top;">
+                                            <input type="submit" id="loginButton" class="btn btn-success" value="发送邮件"><span id="msgdemo3"></span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="buttonGroup">
+                                <a id="reg_link" href="javascript:void(0)"><i class="icon_26 icon-reg"></i><span>注册<b></b></span></a>
+                                <a id="login_link" href="javascript:void(0)"><i class="icon_26 icon-login"></i><span>登录<b></b></span></a>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <!-- <div id="via">
+                'Astronaut on fire' by <a href="http://www.jackcrossing.com" style="color:#999" target="_blank">Jack Crossing</a>
+            </div> -->
+            <div id="detect">
+                如果想体验最佳使用效果，请使用 Firefox 或者 Chrome 等高级浏览器。Biu原则上不会对IE内核浏览器（包括国产360浏览器、腾讯TT等）和 <strong>Windows系统</strong> 做兼容。
+            </div>
+        </div>
+
+<div id="rec_home">
+    $if user:
+        $if user.is_logged:
+            <div id="rec_nav">
+                <div class="navbar navbar-inverse">
+                    <div class="navbar-inner">
+                        <ul class="nav">
+                            <li class="active"><a href="/">推荐片段</a></li>
+                            <li><a href="/node">推荐话题</a></li>
+                            $if rights > 1:
+                                <li class="onlyAdmin"><a href="/node/all">最新话题 - 仅管理员</a></li>
+                                <li class="onlyAdmin"><a href="/post/latest">最新片段 - 仅管理员</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+    <section class="node_page_content clearfix">
+    $if postList:
+        <div class="post_list_wrap clearfix">
+            <ul>
+            $for i in xrange(len(postList)):
+                $if i == 0 :
+                    <li class="post_list post_list_first item_temp_$postList[0].postTemp
+                    $if not postList[0].postImage : 
+                        item_no_img
+                    ">
+                        <div class="post_link_wrap">
+                            <a href="/post/$postList[0].id">
+                                $if postList[0].postImage:
+                                    <span class="item_image_wrap">
+                                        $if postList[0].postTemp == 1 or postList[0].postTemp == 2:
+                                            $ img = postList[0].postImage + "_750.jpg"
+                                        $elif postList[0].postTemp == 3 or postList[0].postTemp == 4 or postList[0].postTemp == 5:
+                                            $ img = postList[0].postImage + "_751.jpg"
+                                        <span class="item_image" style="background-image:url($img)"></span>
+                                    </span>
+                                <div class="post_cont">
+                                    $if postList[0].postTemp == 4:
+                                        <div class="vertical-align"><h1>$postList[0].postCaption</h1></div>
+                                    $else:
+                                        <h1>$postList[0].postTitle</h1>
+                                    $if postList[0].postTemp != 3 and postList[0].postTemp != 4 and postList[0].postTemp != 5:
+                                        <p class="snippet">
+                                        $filter_tags(postList[0].postArticle[0:850])
+                                        </p>
+                                    <div class="gradient"></div>
+                                </div>
+                            </a>
+                        
+                            <div class="meta">
+                                <span class="magnitude">$postList[0].magnitude喜欢</span>
+                                <span class="comment_num">$postList[0].comment_num评论</span>
+                                <span class="post_author"><a title="$authors[0].nickname" href="/member/$authors[0].username">$authors[0].nickname</a> 发布在 <a class="post_belong_node" title="$nodes[0].nodeName" href="/node/$nodes[0].id">$nodes[0].nodeName</a></span>
+                            </div>
+                        </div>
+                    </li>
+                $else:
+                    <li class="post_list item_temp_$postList[i].postTemp
+                    $if not postList[i].postImage : 
+                        item_no_img
+                    ">
+                        <div class="post_link_wrap">
+                            <a href="/post/$postList[i].id">
+                                $if postList[i].postImage:
+                                    <span class="item_image_wrap">
+                                        $if postList[i].postTemp == 1 or postList[i].postTemp == 2:
+                                            $ img = postList[i].postImage + "_365.jpg"
+                                        $elif postList[i].postTemp == 3 or postList[i].postTemp == 4 or postList[i].postTemp == 5:
+                                            $ img = postList[i].postImage + "_366.jpg"
+                                        <span class="item_image" style="background-image:url($img)"></span>
+                                    </span>
+                                <div class="post_cont">
+                                    $if postList[i].postTemp == 4:
+                                        <div class="vertical-align"><h1>$postList[i].postCaption</h1></div>
+                                    $else:
+                                        <h1>$postList[i].postTitle</h1>
+                                    $if postList[i].postTemp != 3 and postList[i].postTemp != 4 and postList[i].postTemp != 5:
+                                        <p class="snippet">
+                                        $filter_tags(postList[i].postArticle[0:850])
+                                        </p>
+                                    <div class="gradient"></div>
+                                </div>
+                            </a>
+                        
+                            <div class="meta">
+                                <span class="magnitude">$postList[i].magnitude喜欢</span>
+                                <span class="comment_num">$postList[i].comment_num评论</span>
+                                <span class="post_author"><a title="$authors[i].nickname" href="/member/$authors[i].username">$authors[i].nickname</a> 发布在 <a class="post_belong_node" title="$nodes[i].nodeName" href="/node/$nodes[i].id">$nodes[i].nodeName</a></span>
+
+                            </div>
+                        </div>
+                    </li>
+            </ul>
+        </div>
+    $else:
+        <div class="node_empty_border">
+            <div class="node_empty">
+                <h1>这里还是空的</h1>
+            </div>
+        </div>
+    </section>
+
+    <footer id="home_footer" class="clearfix">
+        <div class="pull-right">
+            <a href="/about">关于Biu</a>
+            <a href="/policy">免责声明</a>
+            <a href="/privacy">隐私声明</a>
+            <a href="/guideline">使用须知</a>
+            <a href="/node/5">博客</a>
+            $if user.is_logged:
+                $if rights > 1:
+                    <a href="/update" style="color:#c00">更新</a>
+                    <a href="/admin" style="color:#c00">后台</a>
+        </div>
+        <div class="pull-left corpright">
+            2013 Copyright &copy;  biubiubiubiu.com
+        </div>
+    </footer>
+</div>
+$if user.is_logged:
+    <!--申请表单 s -->
+    <div id="apply_box">
+        <div id="apply_box_inner">
+            <h4>申请开通权限</h4>
+            <form autocomplete='off' id="apply_box_form" action="/account/apply_for_permission">
+                <div id="apply_box_avatar"><img src="$user.avatarPath" /></div>
+                <div class="controls">
+                    <label class="t-l f12">填写你的邮箱，用来接收申请结果</label>
+                    <input type="text" class="span4" placeholder="你的邮箱地址，用来接收申请结果" name="email" datatype="e" errormsg=" " nullmsg=" " value="$user.email"/><span class="Validform_checktip"></span>
+                </div>
+                <div class="controls">
+                    <label class="t-l f12">申请理由 10-300字</label>
+                    <textarea name="reason" class="span4" datatype="*10-300" placeholder="申请理由 10-300字" errormsg=" " nullmsg=" "></textarea><span class="Validform_checktip"></span>
+                </div>
+                <input type="hidden" name="douban_id" value="$user.douban_id"/>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">好了，提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--申请表单 o -->
+<script>
+jQuery(function(){
+    jQuery('body').css({
+        'background':'#EDEDEB'
+    })
+    jQuery('#main').css({
+        'height': '100%'
+    })
+})
+</script>

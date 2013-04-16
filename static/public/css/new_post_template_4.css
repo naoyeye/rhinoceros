@@ -1,0 +1,11 @@
+.new_post_template_4 #post_form_1{padding: 0 60px;position: relative;}
+.new_post_template_4 .post_image_upload_wrap{position: relative; height: 510px!important;  width: auto!important;margin: 0 auto;}
+.new_post_template_4 .post_image_upload{background: #ccc}
+.new_post_template_4 .post_image_upload, 
+.new_post_template_4 .post_image_upload .imageHolder{background-position: center center}
+.new_post_template_4 .post_name,
+.new_post_template_4 .post_article{display: none;}
+.new_post_template_4 .post_name{position: absolute;margin-left: 40px;top: 60px;word-break:break-all;word- wrap:break-word}
+.new_post_template_4 .post_caption{position: absolute;top: 30px;left:100px;}
+.new_post_template_4 .post_caption textarea{height: 420px;width: 350px;background: rgba(0,0,0,0.23);color: #fff;font-size: 50px;line-height:60px;border:none;box-shadow:none;}
+.new_post_template_4 #post_form_1 .btn{position: relative;margin-top: 30px;}
