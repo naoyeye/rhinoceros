@@ -819,15 +819,20 @@ jQuery('#switchImgWrap').toggle(
     })
 
 //切换片段摘要、正文编辑状态
-    var doc_height = jQuery(document).height(); //先得到原始页面的高度
+    var doc_height = jQuery(document).height(); //先得到没执行动作之前的原始页面高度
+
+    // alert(doc_height)
 
     jQuery('.post_field_edit, .cancel_field_btn').click(function(){
         var z = jQuery('body').attr('class'),
             t = jQuery(this),
             j = jQuery('#post_field_update_form').height(),
-            c = jQuery('.post_field p:first').html(),
+            // c = jQuery('.post_field p:first').html(),
             // a = jQuery('.post_field p:eq(1)').html(),
-            a = jQuery('#post_Article').val().replace(/(<br\/>)/g, "\r\n");
+            a = jQuery('#post_Article').val(),
+            c_h = jQuery('p.post_caption').height();
+
+        // jQuery('#post_Caption').height(c_h)
 
         var _btnlLeft = t.offset().left, //得到原先的“编辑”按钮距离左边屏幕的距离
             _btnlTop  = t.offset().top,
@@ -846,7 +851,7 @@ jQuery('#switchImgWrap').toggle(
         
         jQuery('.post_field').toggle();
 
-        // 判断当前的模板和是否已经fixed
+        // 判断当前的模板  以及按钮是否已经fixed
         if(t.css('position') == 'fixed'){
 
             jQuery('#test_log').html('3');
@@ -872,6 +877,7 @@ jQuery('#switchImgWrap').toggle(
                 jQuery('#test_log').html('3.2');
 
                 w.addClass('form_action_wrap_fixed').css({
+                    'position' : 'fixed',
                     'left' : _btnlLeft + 10,
                     'top' : 10
                 });
@@ -908,12 +914,35 @@ jQuery('#switchImgWrap').toggle(
                     'width' : 150
                 });
             }
-
         }
 
-        // 因为摘要部分会占用一定的高度，所以需要重新得到页面的高度
-        var doc_height_new = jQuery(document).height(); 
-        alert(doc_height_new - doc_height)
+        // 因为摘要部分会占用一定的高度，所以需要重新得到执行动作后新的页面的高度
+        var doc_height_new = jQuery(document).height(),
+            w_height = jQuery(window).height();
+
+        if(t.attr('class') == 'cancel_field_btn btn'){ //如果点击的是取消按钮
+            var doc_height_2 = jQuery(document).height();
+            distance = doc_height_new - doc_height_2;
+            // alert(1)
+        }else{
+            distance = doc_height_new - doc_height;
+        }
+
+            
+        // alert('原始高度 =' + doc_height)
+        // alert('新高度 =' + doc_height_new)
+        // alert(distance)
+
+        // return false;
+
+        // if( distance > 0 ){ // 如果大于0，说明页面变长了。需要减去多出来的部分，让页面看起来没有上下移动
+        //     // alert('1是：' + distance);
+        //     jQuery(document).stop().scrollTo('+=' + distance + 'px', 800);
+        // } else {
+        //     distance = -distance;
+        //     // alert('2是：' + distance);
+        //     jQuery(document).stop().scrollTo('-=' + distance + 'px',800);
+        // }
 
         // 滚动页面到 #post_content 区域
         // jQuery(document).stop().scrollTo('.post_content', 400);

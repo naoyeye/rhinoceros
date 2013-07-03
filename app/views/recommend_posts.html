@@ -23,13 +23,14 @@ $if rights > 1:
 #not_logged_bg{
     position: relative;
     height: 600px;
+    overflow: hidden;
     /*background: #333332 url(/static/public/img/loading_b.gif) center 85% no-repeat;*/
 }
 #not_logged{
     position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 600px;
     width: 100%;
     /*background: url(/static/public/img/landing_bg/18.jpg) 50% 40% no-repeat;*/
     background: #58AD69;
@@ -285,6 +286,7 @@ $if user:
                         <ul class="nav">
                             <li class="active"><a href="/">推荐片段</a></li>
                             <li><a href="/node">推荐话题</a></li>
+                            <li style="margin-left:10px;"><a href="/node" style="background:#16a085;">待补充话题</a></li>
                             $if rights > 1:
                                 <li class="onlyAdmin"><a href="/node/all">最新话题 - 仅管理员</a></li>
                                 <li class="onlyAdmin"><a href="/post/latest">最新片段 - 仅管理员</a></li>

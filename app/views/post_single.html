@@ -167,10 +167,14 @@ $if user.is_logged:
                 $ postArticle = sinaimg(postArticle)
                 $ postArticle = xiami(postArticle)
                 $ postArticle = autolink(postArticle, nofollow=True)
-                <p>
-                    $:postArticle.replace("\r\n", "<br/>")
-                    $#:post.postArticle
-                </p>
+                <div>
+                    $#判断文章发布时间，新旧的处理不一致
+                    $if post.id >= 471:
+                        $:postArticle
+                    $else:
+                        $:postArticle.replace("\r\n", "<br />")
+                    
+                </div>
                 $if user.is_logged:
                     $if user.id == post.postAuthor:
                         <i class="icon post_field_edit icon-pencil"></i>
@@ -306,9 +310,12 @@ $if user.is_logged:
                                 <a class="post_author" title="$commenters[i].nickname" href="/member/$commenters[i].username">$commenters[i].nickname</a>
                                 <time class="post_date">$timestrf(comments[i].creation_ts)</time>
                             </div>
-                            <p>$:comments[i].content</p>
+                            <p>$:autolink(comments[i].content, nofollow=True)</p>
+                            $#<p>:comments[i].content</p>
                         </div>
+                        
                         <div class="comment_control">
+                            
                         $if user.is_logged:
                             $if user.id == comments[i].uid:
                                 <a href="javascript:void(0)" rel="nofollow" class="del_comment">删除</a>
@@ -469,7 +476,7 @@ $if user.is_logged:
             // 如果滚动到内容部分，则固定按钮
             if(jQuery(window).scrollTop() > _defautlTop){
                 jQuery('#test_log').html('1');
-                pencil.css({'position':'fixed','top': 10 ,'right': 'auto','z-index':99999,'left':_defautlLeft,});
+                pencil.css({'position':'fixed','top': 10 ,'right': 'auto','z-index':9,'left':_defautlLeft,});
 
                 if(jQuery('body').hasClass('new_post_template_1')){ // 如果是模板 1
                     jQuery('#test_log').html('1.1');
@@ -513,10 +520,10 @@ $if user.is_logged:
             }
         })
 
-    //评论字数检查
-    jQuery('#commentContent').focus(function(){
-        jQuery('#postCommentForm .form-actions').fadeIn(150);
-    })
+    //评论字数检查 因为win下似乎无法显示 暂时注释
+    // jQuery('#commentContent').focus(function(){
+    //     jQuery('#postCommentForm .form-actions').fadeIn(150);
+    // })
 
     jQuery('#commentContent').NobleCount('.charsLeft',{
         on_negative: 'go_red',

@@ -21,6 +21,9 @@ siteName = site_name
 class welcome:
     def GET(self, arg):
 
+        print '='*10
+        print user.items()
+        print '='*10
         if user.username == arg:
             #如果是重新填写邮箱
             if web.input().has_key('action'):

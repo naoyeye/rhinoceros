@@ -327,8 +327,11 @@ class post_latest:
     def GET(self):
         per = users.get_permission_by_douid(user.douban_id)
         rights = per[0].rights
-        postList = postModel.getRecent20Posts()
-        return view.base(view.post_latest(postList), user, siteName, rights, ntf_list=None, notification_num=None, ntf_posts=None, ntf_users=None)
+        if rights > 1:
+            postList = postModel.getRecent20Posts()
+            return view.base(view.post_latest(postList), user, siteName, rights, ntf_list=None, notification_num=None, ntf_posts=None, ntf_users=None)
+        else:
+            raise web.notfound()
 
 #添加评论
 class new_post_comment:

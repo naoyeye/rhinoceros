@@ -33,7 +33,8 @@ class about:
             rights = per[0].rights
         else:
             rights = 0
-        return view.base(view.about(), user, siteName, rights, ntf_list, notification_num, ntf_posts, ntf_users)
+        # return view.base(view.about(), user, siteName, rights, ntf_list, notification_num, ntf_posts, ntf_users)
+        raise web.seeother('/post/453')
 
 class policy:
     def GET(self):

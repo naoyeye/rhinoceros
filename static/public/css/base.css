@@ -784,7 +784,7 @@ h1.post_title{
     height: 48px;
     margin-bottom: 13px;
     overflow: hidden;
-    width: 48px;
+    width: 48px
 }
 .post_meta_info .post_author{
     color: #303239;
@@ -800,6 +800,8 @@ h1.post_title{
     line-height: 30px;
     margin-bottom: 30px;
 }
+
+.post_field blockquote p{font-size: 16px;}
 
 .post_field p.post_caption{
     color: #9D9D9D;
@@ -1471,7 +1473,7 @@ a .overlay_username{font-weight: normal;}
 #add_new_comment{position: relative;}
 #comment_block_wrap .post_meta{bottom: auto;top: 0px;border: none}
 #comment_block_wrap .post_meta > a{display: inline-block;padding: 2px;background: #fff;border-radius: 50%;overflow: hidden;}
-#add_new_comment .form-actions{padding-left: 0;display: none;}
+#add_new_comment .form-actions{padding-left: 0;}
 .charsLeft{padding: 0 5px;font-size: 22px;font-weight: 700; font-style: italic;font-family: 'Constantia',Georgia;}
 .go_green{color: green}
 .go_red{color: red}
@@ -1514,7 +1516,7 @@ a .overlay_username{font-weight: normal;}
 
 .post_temp_3 #comment_block_wrap a,
 .post_temp_4 #comment_block_wrap a{
-    color: #B3B3B1;
+    color: #79BE87;
     font-size: 12px;
 }
 

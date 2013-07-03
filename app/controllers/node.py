@@ -319,4 +319,4 @@ class node_all(object):
                 authors += users.get_users_by_id(nodeList[i].node_author)
             return view.base(view.node_all(nodeList, authors), user, siteName, rights, ntf_list=None, notification_num=None, ntf_posts=None, ntf_users=None)
         else:
-            return web.notfound()
+            raise web.notfound()
