@@ -32,9 +32,10 @@ $if rights > 1:
     left: 0;
     height: 600px;
     width: 100%;
+    background: #121212 url(http://www.biubiubiubiu.com/static/upload/post_img/2013/9/14/2013914124958_8264d4fb920bf8d43a1f7a3b0d4fe357_1200.jpg) center center no-repeat;
     /*background: url(/static/public/img/landing_bg/18.jpg) 50% 40% no-repeat;*/
-    background: #58AD69;
-    /*background-size: cover;*/
+    /*background: #58AD69;*/
+    background-size: cover;
 }
 #l_over{
     display: none;
@@ -83,9 +84,6 @@ $if user:
     $if not user.is_logged:
         <script>
             jQuery(function(){
-                //未登录时移除导航
-                $if not user.is_logged:
-                    jQuery('#navbarWrapper').remove();
 
                 //判断浏览器
                 if(jQuery.browser.msie){//若是ie浏览器
@@ -117,10 +115,10 @@ $if user:
                 var r_t = jQuery('#rec_home').offset().top,
                     n = jQuery('#not_logged_fixed'),
                     w = jQuery('#landing_home_welcome'),
+                    p = jQuery('#navbarWrapper'),
                     // w_t = w.offset().top;
                     w_t = 60;
 
-                    // alert(w_t)
                 jQuery(window).scroll(function(){
                     var scroll_top = jQuery(window).scrollTop(),
                         distance =  r_t - scroll_top;
@@ -129,6 +127,12 @@ $if user:
                     w.css({
                         'top' : w_t - scroll_top*0.2
                     })
+
+                    if(scroll_top > 130){
+                        p.fadeOut();
+                    }else{
+                        p.fadeIn();
+                    }
 
                     // 大logo处理
                     if(distance <= 290){ 

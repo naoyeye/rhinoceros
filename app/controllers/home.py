@@ -14,6 +14,7 @@ user = session.get_session()
 class index:
     def GET(self):
         # if user.is_logged:
+        print '-'*10
 
         rec_posts = admin.get_rec_posts()
         # if rec_posts:
@@ -84,26 +85,26 @@ class index:
         return view.base(view.recommend_posts(postList, authors, nodes, user, rights, apply_log), user, siteName, rights, ntf_list, notification_num, ntf_posts, ntf_users)
 
         # else:
-        #     from config import db
-        #     #得到上线时间距今多少天
-        #     t = time.strptime('2013-01-01 04:15:57', "%Y-%m-%d %X")
-        #     ts = datetime.datetime(* t[:6])
-        #     delta = (datetime.datetime.now() - ts).days 
+            # from config import db
+            # #得到上线时间距今多少天
+            # t = time.strptime('2013-01-01 04:15:57', "%Y-%m-%d %X")
+            # ts = datetime.datetime(* t[:6])
+            # delta = (datetime.datetime.now() - ts).days 
 
-        #     #得到用户数
-        #     user_count = int(db.select('users', what='count(distinct id) as c')[0].c)
-        #     #得到话题数
-        #     node_count = int(db.select('_node', what='count(distinct id) as c')[0].c)
-        #     #得到片段数
-        #     post_count = int(db.select('_post', what='count(distinct id) as c')[0].c)
-        #     #得到喜欢数
-        #     vote_count = int(db.select('_post_vote_user', what='count(distinct id) as c')[0].c)
-        #     #得到评论数
-        #     comm_count = int(db.select('_post_comments', what='count(distinct id) as c')[0].c)
+            # #得到用户数
+            # user_count = int(db.select('users', what='count(distinct id) as c')[0].c)
+            # #得到话题数
+            # node_count = int(db.select('_node', what='count(distinct id) as c')[0].c)
+            # #得到片段数
+            # post_count = int(db.select('_post', what='count(distinct id) as c')[0].c)
+            # #得到喜欢数
+            # vote_count = int(db.select('_post_vote_user', what='count(distinct id) as c')[0].c)
+            # #得到评论数
+            # comm_count = int(db.select('_post_comments', what='count(distinct id) as c')[0].c)
 
-        #     r = str(random.randint(1, 17))
+            # r = str(random.randint(1, 17))
 
-        #     return view.base01(view.landing(r, delta, user_count, node_count, post_count, vote_count, comm_count), siteName)
+            # return view.base01(view.landing(r, delta, user_count, node_count, post_count, vote_count, comm_count), siteName)
             
     def POST(self):
         f = web.input(regNickname="", regUserName="", regEmail="", regUserPassword="", regUserPassword2="")
