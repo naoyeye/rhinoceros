@@ -19,12 +19,9 @@ web.config.smtp_starttls = True
 _from = 'Biu <help@biubiubiubiu.com>'
 # _from = None
 
-bcc = 'J.Y.Han <ihanjiyun@gmail.com>' #暗抄送 # 
-ieatdouban = 'ieatdouban <ieatdouban@gmail.com>'
-ihanjiyun = 'J.Y.Han <ihanjiyun@gmail.com>'
-naoyeye = 'naoyeye@gmail.com'
-sober =  'Sober <sober.zhou@gmail.com>'
-yihanghsu = 'Yihang Hsu <ehanghsu@gmail.com>'
+bcc = '' #暗抄送 # 
+xxx = 'xxx <xxx@gmail.com>'
+admin_list = ['xxx@gmail.com', 'yyy@gmail.com']
 
 #=========
 
@@ -441,7 +438,7 @@ def apply_for_permission(apply_user, apply_time, email):
     subject =  'There is a new apply from Biu'
     msg = web.template.Template(apply_for_permission_temp)(apply_user, apply_time)
     msg['subject'] = Header(subject, 'utf-8') 
-    admin_list = ['sober.zhou@gmail.com', 'ihanjiyun@gmail.com']
+    admin_list = ['xxx@gmail.com', 'xxx@gmail.com']
     web.sendmail(_from, admin_list, subject, msg, headers=({'Content-Type':'text/html;charset=utf-8','User-Agent': 'webpy.sendmail', 'X-Mailer': 'webpy.sendmail',}))
 
 #发送管理员处理后的申请结果邮件 - 通过
@@ -470,7 +467,7 @@ def send_feedback(user, content):
     subject = "Someone submitted a new feedback"
     msg = web.template.Template(send_feedback_tmp)(user, content)
     msg['subject'] = Header(subject, 'utf-8') 
-    web.sendmail(_from, ihanjiyun, subject, msg, headers=({'Content-Type':'text/html;charset=utf-8','User-Agent': 'webpy.sendmail', 'X-Mailer': 'webpy.sendmail',}))
+    web.sendmail(_from, xxx, subject, msg, headers=({'Content-Type':'text/html;charset=utf-8','User-Agent': 'webpy.sendmail', 'X-Mailer': 'webpy.sendmail',}))
 
 #用户提醒邮件 - 喜欢
 def someone_like_ur_post(user, author, post):
