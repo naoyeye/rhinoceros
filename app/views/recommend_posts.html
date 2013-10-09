@@ -149,15 +149,15 @@ $if user:
                     }
 
                     // 头部css细节处理
-                    if(distance <= 33){
-                        n.css({
-                            'box-shadow' : '0 2px 2px rgba(0,0,0,0.45)'
-                        })
-                    } else{
-                        n.css({
-                            'box-shadow' : 'none'
-                        });
-                    }
+                    // if(distance <= 33){
+                    //     n.css({
+                    //         'box-shadow' : '0 2px 2px rgba(0,0,0,0.45)'
+                    //     })
+                    // } else{
+                    //     n.css({
+                    //         'box-shadow' : 'none'
+                    //     });
+                    // }
 
 
                 })
@@ -169,7 +169,7 @@ $if user:
         <div id="not_logged_fixed">
             <div class="node_page_content">
                 <div class="clearfix" style="position:relative">
-                    <a id="b_top" href="javascript:void(0)" title="Biu"><img src="/static/public/img/logo_s_w_2.png" /></a>
+                    <a id="b_top" href="javascript:void(0)" title="Biu"><img src="/static/public/img/logo_s_b.png" /></a>
                     <a class="share_sns_icon" href="/connect/douban"><i></i></a>
                 </div>
             </div>
@@ -290,9 +290,8 @@ $if user:
                         <ul class="nav">
                             <li class="active"><a href="/">推荐片段</a></li>
                             <li><a href="/node">推荐话题</a></li>
-                            <li style="margin-left:10px;"><a href="/node" style="background:#16a085;">待补充话题</a></li>
                             $if rights > 1:
-                                <li class="onlyAdmin"><a href="/node/all">最新话题 - 仅管理员</a></li>
+                                <li class="onlyAdmin"><a href="/node/latest">最新话题 - 仅管理员</a></li>
                                 <li class="onlyAdmin"><a href="/post/latest">最新片段 - 仅管理员</a></li>
                         </ul>
                     </div>

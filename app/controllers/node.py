@@ -307,7 +307,7 @@ class node_update:
         return '{"node_id":'+ str(arg)+ ',"status":"y"}'#
 
 #话题列表 #仅管理员可见
-class node_all(object):
+class node_latest(object):
     @session.login_required
     def GET(self):
         per = users.get_permission_by_douid(user.douban_id)
