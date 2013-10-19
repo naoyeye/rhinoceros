@@ -205,92 +205,107 @@ class change_email:
 #             web.header('Content-Type', 'application/json')
 #             return '{"status":"n"}'
 
-# class member_avatar:
-#     @session.login_required
-#     def GET(self):
-#         return view.base(view.member_setting_avatar(user, mid_src=''), user, siteName)
+class member_avatar:
+    @session.login_required
+    def GET(self):
+        rights = None
+        ntf_list = None
+        notification_num = None
+        ntf_posts = None
+        ntf_users = None
+        return view.base(view.member_setting_avatar(user, mid_src=''), user, siteName, rights, ntf_list, notification_num, ntf_posts, ntf_users)
 
-#     @session.login_required
-#     def POST(self):
-#         cgi.maxlen = 2 * 1024 * 1024 # 限制2MB
-#         try:
-#             x = web.input(uploadImg={})
-#             homedir = os.getcwd()
-#             filedir = '%s/static/upload/image' %homedir #图片存放路径
+    @session.login_required
+    def POST(self):
+        cgi.maxlen = 2 * 1024 * 1024 # 限制2MB
+        try:
+            x = web.input(uploadImg={})
+            homedir = os.getcwd()
+            filedir = '%s/static/upload/image' %homedir #图片存放路径
 
-#             if 'uploadImg' in x: # to check if the file-object is created
-#                 filepath = x.uploadImg.filename.replace('\\','/') # replaces the windows-style slashes with linux ones.
-#                 filename = filepath.split('/')[-1] # splits the and chooses the last part (the filename with extension) #获取文件名
-#                 ext = filename.split('.', -1)[-1] #获取后缀
-#                 if ext == 'jpg' or ext == 'gif' or ext == 'jpeg' or ext == 'png' or ext == 'JPG':
-#                     now = datetime.datetime.now()
+            if 'uploadImg' in x: # to check if the file-object is created
+                filepath = x.uploadImg.filename.replace('\\','/') # replaces the windows-style slashes with linux ones.
+                filename = filepath.split('/')[-1] # splits the and chooses the last part (the filename with extension) #获取文件名
+                ext = filename.split('.', -1)[-1] #获取后缀
+                if ext == 'jpg' or ext == 'gif' or ext == 'jpeg' or ext == 'png' or ext == 'JPG':
+                    now = datetime.datetime.now()
                     
-#                     d_path = filedir + '/%d/%d/%d' %(now.year, now.month, now.day)
-#                     if not os.path.exists(d_path):
-#                         os.makedirs(d_path) #创建当前日期目录
+                    d_path = filedir + '/%d/%d/%d' %(now.year, now.month, now.day)
+                    if not os.path.exists(d_path):
+                        os.makedirs(d_path) #创建当前日期目录
 
-#                     t = '%d%d%d%d%d%d' %(now.year, now.month, now.day, now.hour, now.minute, now.second)                    
-#                     all = list('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSQUVWXYZ')
-#                     randStr = ''
-#                     for i in range(10):
-#                         index = random.randint(0,len(all)-1)
-#                         randStr = randStr + all[index] #生成10位随机数
-#                     authKey = hashlib.md5(randStr + user.username).hexdigest()
-#                     filename = t + '_' + authKey + '.' + ext #以时间+authKey作为文件名
+                    t = '%d%d%d%d%d%d' %(now.year, now.month, now.day, now.hour, now.minute, now.second)                    
+                    all = list('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSQUVWXYZ')
+                    randStr = ''
+                    for i in range(10):
+                        index = random.randint(0,len(all)-1)
+                        randStr = randStr + all[index] #生成10位随机数
+                    authKey = hashlib.md5(randStr + user.username).hexdigest()
+                    filename = t + '_' + authKey + '.' + ext #以时间+authKey作为文件名
                     
-#                     fout = open(d_path + '/' + filename,'wb') # creates the file where the uploaded file should be stored
-#                     fout.write(x.uploadImg.file.read()) # writes the uploaded file to the newly created file.
-#                     fout.close() # closes the file, upload complete.
+                    fout = open(d_path + '/' + filename,'wb') # creates the file where the uploaded file should be stored
+                    fout.write(x.uploadImg.file.read()) # writes the uploaded file to the newly created file.
+                    fout.close() # closes the file, upload complete.
 
-#                     im = Image.open(d_path + '/' + filename)
-#                     width, height = im.size #判断比例
-#                     if width/height > 5 or height/width > 5 :
-#                         os.remove(d_path + '/' + filename) #删除图片
-#                         #session.reset()
-#                         return view.base(view.member_setting_avatar(user, mid_src='', message='图片的比例有些不太合适，请选择一张更容易辨识的图片吧'), user, siteName)
-#                     else:
-#                         path = d_path + '/' + filename #for thumb
-#                         utils.make_thumb(path) #创建缩略图
+                    im = Image.open(d_path + '/' + filename)
+                    width, height = im.size #判断比例
+                    if width/height > 5 or height/width > 5 :
+                        os.remove(d_path + '/' + filename) #删除图片
+                        #session.reset()
+                        return view.base(view.member_setting_avatar(user, mid_src='', message='图片的比例有些不太合适，请选择一张更容易辨识的图片吧'), user, siteName)
+                    else:
+                        path = d_path + '/' + filename #for thumb
+                        utils.make_thumb(path) #创建缩略图
 
-#                         #big_src = '/static/upload/image/%d/%d/%d/' %(now.year, now.month, now.day) + filename
-#                         mid_src = '/static/upload/image/%d/%d/%d/' %(now.year, now.month, now.day) + t + '_' + authKey + '_160.jpg'
-#                         #sml_src = '/static/upload/image/%d/%d/%d/' %(now.year, now.month, now.day) + t + '_' + authKey + '_48x48.jpg'
+                        #big_src = '/static/upload/image/%d/%d/%d/' %(now.year, now.month, now.day) + filename
+                        mid_src = '/static/upload/image/%d/%d/%d/' %(now.year, now.month, now.day) + t + '_' + authKey + '_160.jpg'
+                        #sml_src = '/static/upload/image/%d/%d/%d/' %(now.year, now.month, now.day) + t + '_' + authKey + '_48x48.jpg'
 
-#                         user_id = user.id
-#                         avatar = '/%d/%d/%d/' %(now.year, now.month, now.day) + t + '_' + authKey
+                        user_id = user.id
+                        avatar = '/%d/%d/%d/' %(now.year, now.month, now.day) + t + '_' + authKey
                        
-#                         users.save_user_avatar(user_id, avatar)#入库
-#                         #session.reset()
-#                         return view.base(view.member_setting_avatar(user, mid_src), user, siteName)
+                        users.save_user_avatar(user_id, avatar)#入库
+                        #session.reset()
+                        rights = None
+                        ntf_list = None
+                        notification_num = None
+                        ntf_posts = None
+                        ntf_users = None
+                        return view.base(view.member_setting_avatar(user, mid_src), user, siteName, rights, ntf_list, notification_num, ntf_posts, ntf_users)
 
-#                 else:
-#                     #session.reset()
-#                     return view.base(view.member_setting_avatar(
-#                         user, mid_src='',
-#                         message='上传格式仅支持jpg/png/gif/jpeg'), user, siteName)
-#         except ValueError:
-#             #session.reset()
-#             return view.base(view.member_setting_avatar(
-#                         user, mid_src='',
-#                         message='文件太大了，我吃不消哇~'), user, siteName)
+                else:
+                    #session.reset()
+                    return view.base(view.member_setting_avatar(
+                        user, mid_src='',
+                        message='上传格式仅支持jpg/png/gif/jpeg'), user, siteName)
+        except ValueError:
+            #session.reset()
+            rights = None
+            ntf_list = None
+            notification_num = None
+            ntf_posts = None
+            ntf_users = None
+            return view.base(view.member_setting_avatar(
+                        user, mid_src='',
+                        message='文件太大了，我吃不消哇~'), user, siteName, rights, ntf_list, notification_num, ntf_posts, ntf_users)
 
-# class member_avatar_crop:
-#     @session.login_required
-#     def POST(self):
-#         crop_data = web.input()
-#         path = crop_data['path']
-#         x = crop_data['x']
-#         y = crop_data['y']
-#         w = crop_data['w']
-#         h = crop_data['h']
-#         s = utils.make_thumb_crop(path, x, y, w, h)
-#         session.reset()
-#         raise web.seeother('/settings')
+class member_avatar_crop:
+    @session.login_required
+    def POST(self):
+        crop_data = web.input()
+        path = crop_data['path']
+        x = crop_data['x']
+        y = crop_data['y']
+        w = crop_data['w']
+        h = crop_data['h']
+        s = utils.make_thumb_crop(path, x, y, w, h)
+        session.reset()
+        raise web.seeother('/settings')
 
-#         # return view.base(view.member_setting_avatar(
-#         #                 user, mid_src='',
-#         #                 message='头像更新成功~'), user, siteName)
-#         #return view.test(path, x, y, w, h, s)
+        # return view.base(view.member_setting_avatar(
+        #                 user, mid_src='',
+        #                 message='头像更新成功~'), user, siteName)
+        #return view.test(path, x, y, w, h, s)
 
 
 
