@@ -24,11 +24,10 @@ $(document).ready(function(){
 	var player = $("#zen .player");
 		
 	player.jPlayer({
-			ready: function () {
+		ready: function () {
       		$(this).jPlayer("setMedia", {
-    			//m4a: "/media/2012/07/30/song.m4a",
-    			// mp3: "static/upload/media/2012/07/30/01 - Stand By Me.mp3"
-    			mp3:"http://119.188.72.25/1/s128.music.sina.com.cn/2273108.mp3?ssig=%2Bn8sijK%2Bro&ip=1351708913,114.246.121.67&Expires=1351710113&KID=sina,music&format=.mp3"
+    			// m4a: "/media/2012/07/30/song.m4a",
+    			mp3: "static/public/media/aria.mp3"
         		//oga: "media/2012/07/30/song.ogg"
       		});
     	},
