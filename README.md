@@ -1,6 +1,5 @@
 这是使用web.py框架编写的一个“围绕话题分享内容”的网站。
 
-demo: http://www.biubiubiubiu.com
 
 参考的网站原型是 [Medium](https://www.medium.com) 最早的一版设计。
 
